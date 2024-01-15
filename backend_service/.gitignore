@@ -1,0 +1,6 @@
+env.sh
+env.bash
+env.template.sh
+env.template.bash
+bin/*
+tmp/*
