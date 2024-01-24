@@ -10,6 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -18,13 +19,13 @@ const currentSection = "Storage"
 
 type storage struct {
 	StorageTypes                 []model.StorageTypes
-	StoragesStorageType          []storageStorageType
-	StorageStorageType           storageStorageType
 	ProjectsStorage              []projectStorage
 	SearchQuery                  string    `json:"-"`
 	ProjectID                    uuid.UUID `json:"-"`
 	CreatedOnGreaterThan         string    `json:"-"`
 	CreatedOnLessThan            string    `json:"-"`
+	LastUpdatedOnOnGreaterThan   string    `json:"-"`
+	LastUpdatedOnLessThan        string    `json:"-"`
 	Limit                        int       `json:"-"`
 	Offset                       int       `json:"-"`
 	FileID                       uuid.UUID `json:"-"`
@@ -38,18 +39,32 @@ type storage struct {
 		Storage model.Storage
 		Columns []string
 	}
-	StorageID      uuid.UUID
-	FileStorage    fileStorage
-	CurrentUser    lib.User
-	File           model.Files
-	StorageProject model.StorageProjects
-	Storage        model.Storage
-	ProjectStorage storageProject
+	StorageID               uuid.UUID
+	FileStorage             fileStorage
+	CurrentUser             lib.User
+	File                    model.Files
+	StorageProject          model.StorageProjects
+	Storage                 model.Storage
+	ProjectStorage          storageProject
+	RetrieveStorages        []RetrieveStorage
+	RetrieveStorage         RetrieveStorage
+	AddRemoveStorageProject addRemoveStorageProject
 }
 
-type storageStorageType struct {
-	model.Storage
-	StorageType model.StorageTypes
+type addRemoveStorageProject struct {
+	ProjectID  uuid.UUID
+	StorageIDs []uuid.UUID
+}
+
+type RetrieveStorage struct {
+	ID                    uuid.UUID `sql:"primary_key"`
+	StorageTypeID         string
+	StorageTypeProperties string
+	Name                  string
+	Storage               string
+	IsActive              bool
+	CreatedOn             time.Time
+	LastUpdatedOn         time.Time
 }
 
 type projectStorage struct {

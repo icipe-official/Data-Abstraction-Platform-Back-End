@@ -35,7 +35,7 @@ func Router() *chi.Mux {
 			lib.SendErrorResponse(err, w)
 		} else {
 			lib.SendJsonResponse(struct{ UsersAffected int64 }{UsersAffected: 1}, w)
-			intpkglib.Log(intpkglib.LOG_INFO, currentSection, fmt.Sprintf("User %v delete/deactivated by %v", UserDelete.DirectoryID, UserDelete.CurrentUser.DirectoryID))
+			intpkglib.Log(intpkglib.LOG_INFO, currentSection, fmt.Sprintf("User %v deleted/deactivated by %v", UserDelete.DirectoryID, UserDelete.CurrentUser.DirectoryID))
 		}
 	})
 

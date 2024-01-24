@@ -7,6 +7,7 @@ import (
 	"data_administration_platform/internal/api/routes/directory"
 	"data_administration_platform/internal/api/routes/iam"
 	modeltemplates "data_administration_platform/internal/api/routes/model_templates"
+	platformstatistics "data_administration_platform/internal/api/routes/platform_statistics"
 	"data_administration_platform/internal/api/routes/projects"
 	"data_administration_platform/internal/api/routes/storage"
 	intpkglib "data_administration_platform/internal/pkg/lib"
@@ -40,6 +41,7 @@ func main() {
 	}))
 
 	router.Route(BASE_PATH+lib.API_VERSION, func(r chi.Router) {
+		r.Mount("/platformstats", platformstatistics.Router())
 		r.Mount("/iam", iam.Router())
 		r.Group(func(authedRoutes chi.Router) {
 			authedRoutes.Use(lib.AuthenticationMiddleware)

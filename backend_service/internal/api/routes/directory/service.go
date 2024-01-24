@@ -19,22 +19,20 @@ func (n *directory) deleteUser() error {
 	}
 	defer db.Close()
 
-	deleteQuery := table.DirectoryIam.DELETE().WHERE(table.DirectoryIam.DirectoryID.EQ(jet.UUID(n.DirectoryID)))
-
-	if _, err := deleteQuery.Exec(db); err != nil {
+	if _, err := table.DirectoryIam.DELETE().WHERE(table.DirectoryIam.DirectoryID.EQ(jet.UUID(n.DirectoryID))).Exec(db); err != nil {
 		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Delete user %v credentials by %v failed | reason: %v", n.DirectoryID, n.CurrentUser.DirectoryID, err))
 		return lib.NewError(http.StatusInternalServerError, "Could not delete user")
 	}
 
-	deleteQuery = table.DirectorySystemUsers.DELETE().WHERE(table.DirectorySystemUsers.DirectoryID.EQ(jet.UUID(n.DirectoryID)))
+	if lib.IsUserAuthorized(true, uuid.Nil, []string{}, n.CurrentUser, nil) {
+		if _, err := table.DirectorySystemUsers.DELETE().WHERE(table.DirectorySystemUsers.DirectoryID.EQ(jet.UUID(n.DirectoryID))).Exec(db); err != nil {
+			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Delete system user %v by %v failed | reason: %v", n.DirectoryID, n.CurrentUser.DirectoryID, err))
+			return lib.NewError(http.StatusInternalServerError, "Could not delete user")
+		}
 
-	if _, err := deleteQuery.Exec(db); err != nil {
-		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Delete system user %v by %v failed | reason: %v", n.DirectoryID, n.CurrentUser.DirectoryID, err))
-		return lib.NewError(http.StatusInternalServerError, "Could not delete user")
 	}
 
-	deleteQuery = table.Directory.DELETE().WHERE(table.Directory.ID.EQ(jet.UUID(n.DirectoryID)))
-	if _, err := deleteQuery.Exec(db); err != nil {
+	if _, err := table.Directory.DELETE().WHERE(table.Directory.ID.EQ(jet.UUID(n.DirectoryID))).Exec(db); err != nil {
 		intpkglib.Log(intpkglib.LOG_WARNING, currentSection, fmt.Sprintf("Delete user %v by %v failed | reason: %v", n.DirectoryID, n.CurrentUser.DirectoryID, err))
 	}
 
@@ -72,31 +70,21 @@ func (n *directory) updateUser() error {
 			)
 		}
 
-		updateQuery := table.Directory.
-			UPDATE(columnsToUpdate).
-			MODEL(n.DirectoryUpdate.Directory).
-			WHERE(whereCondition).
-			RETURNING(table.Directory.ID, table.Directory.LastUpdatedOn)
-
-		if err = updateQuery.Query(db, &n.DirectoryUpdate.Directory); err != nil {
+		if err = table.Directory.UPDATE(columnsToUpdate).MODEL(n.DirectoryUpdate.Directory).WHERE(whereCondition).RETURNING(table.Directory.ID, table.Directory.LastUpdatedOn).Query(db, &n.DirectoryUpdate.Directory); err != nil {
 			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Update user %v by %v failed | reason: %v", n.DirectoryID, n.CurrentUser.DirectoryID, err))
 			return lib.NewError(http.StatusInternalServerError, "Could not update user")
 		}
 		isRequestProcessed = true
 	}
 
-	if (n.DirectoryUpdate.IsSystemUser == "true" || n.DirectoryUpdate.IsSystemUser == "false") && lib.IsUserAuthorized(true, uuid.Nil, []string{}, n.CurrentUser, nil) {
-		if n.DirectoryUpdate.IsSystemUser == "true" {
-			insertQuery := table.DirectorySystemUsers.
-				INSERT(table.DirectorySystemUsers.DirectoryID).
-				MODEL(model.DirectorySystemUsers{DirectoryID: n.DirectoryID})
-			if _, err := insertQuery.Exec(db); err != nil {
+	if (n.DirectoryUpdate.IsSystemUser || !n.DirectoryUpdate.IsSystemUser) && lib.IsUserAuthorized(true, uuid.Nil, []string{}, n.CurrentUser, nil) {
+		if n.DirectoryUpdate.IsSystemUser {
+			if _, err := table.DirectorySystemUsers.INSERT(table.DirectorySystemUsers.DirectoryID).MODEL(model.DirectorySystemUsers{DirectoryID: n.DirectoryID}).Exec(db); err != nil {
 				intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Add system user %v by %v failed | reason: %v", n.DirectoryID, n.CurrentUser.DirectoryID, err))
 				return lib.NewError(http.StatusInternalServerError, "Could not update system user")
 			}
 		} else {
-			deleteQuery := table.DirectorySystemUsers.DELETE().WHERE(table.DirectorySystemUsers.DirectoryID.EQ(jet.UUID(n.DirectoryID)))
-			if _, err := deleteQuery.Exec(db); err != nil {
+			if _, err := table.DirectorySystemUsers.DELETE().WHERE(table.DirectorySystemUsers.DirectoryID.EQ(jet.UUID(n.DirectoryID))).Exec(db); err != nil {
 				intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Delete system user %v by %v failed | reason: %v", n.DirectoryID, n.CurrentUser.DirectoryID, err))
 				return lib.NewError(http.StatusInternalServerError, "Could not update system user")
 			}
@@ -146,7 +134,7 @@ func (n *directory) getUsers() error {
 					table.Projects,
 					table.DirectoryProjectsRoles.ProjectID.EQ(table.Projects.ID),
 				),
-				table.DirectoryProjectsRoles.DirectoryID.EQ(table.DirectoryIam.DirectoryID),
+				table.DirectoryProjectsRoles.DirectoryID.EQ(table.DirectoryIam.DirectoryID).AND(table.DirectoryProjectsRoles.ProjectID.EQ(jet.UUID(n.ProjectID))),
 			)
 			columnsToSelect = append(columnsToSelect, jet.ProjectionList{
 				table.Projects.ID.AS("project.project_id"),
@@ -157,9 +145,8 @@ func (n *directory) getUsers() error {
 				table.DirectoryProjectsRoles.CreatedOn.AS("project_roles.project_role_created_on"),
 			})
 		}
-		selectQuery := jet.SELECT(columnsToSelect).FROM(fromTables).WHERE(table.Directory.ID.EQ(jet.UUID(n.DirectoryID)))
 		n.RetrieveUser = RetrieveUser{}
-		if err = selectQuery.Query(db, &n.RetrieveUser); err != nil {
+		if err = jet.SELECT(columnsToSelect).FROM(fromTables).WHERE(table.Directory.ID.EQ(jet.UUID(n.DirectoryID))).Query(db, &n.RetrieveUser); err != nil {
 			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Get user %v by %v failed | reason: %v", n.DirectoryID, n.CurrentUser.DirectoryID, err))
 			return lib.NewError(http.StatusInternalServerError, "Could not get user")
 		}
@@ -255,23 +242,28 @@ func (n *directory) getUsers() error {
 			})
 		}
 		if (n.ProjectID != uuid.Nil && lib.IsUserAuthorized(false, n.ProjectID, []string{}, n.CurrentUser, nil)) || lib.IsUserAuthorized(true, uuid.Nil, []string{}, n.CurrentUser, nil) {
-			var projectRolesWhereCondition jet.BoolExpression
+			projectRolesWhereCondition := table.DirectoryProjectsRoles.DirectoryID.EQ(jet.StringColumn("retrieve_user.id").From(selectedUsers))
 			if n.ProjectID != uuid.Nil {
-				projectRolesWhereCondition = table.DirectoryProjectsRoles.ProjectID.EQ(jet.UUID(n.ProjectID))
+				projectRolesWhereCondition = projectRolesWhereCondition.AND(table.DirectoryProjectsRoles.ProjectID.EQ(jet.UUID(n.ProjectID)))
 				if n.ProjectRole != "" {
 					projectRolesWhereCondition = projectRolesWhereCondition.AND(table.DirectoryProjectsRoles.ProjectRoleID.EQ(jet.String(n.ProjectRole)))
 				}
-			} else {
-				projectRolesWhereCondition = table.DirectoryProjectsRoles.ProjectID.EQ(table.Projects.ID)
-			}
-
-			fromTables = fromTables.LEFT_JOIN(
-				table.DirectoryProjectsRoles.INNER_JOIN(
-					table.Projects,
+				fromTables = fromTables.INNER_JOIN(
+					table.DirectoryProjectsRoles.INNER_JOIN(
+						table.Projects,
+						table.DirectoryProjectsRoles.ProjectID.EQ(table.Projects.ID),
+					),
 					projectRolesWhereCondition,
-				),
-				table.DirectoryProjectsRoles.DirectoryID.EQ(jet.StringColumn("retrieve_user.id").From(selectedUsers)),
-			)
+				)
+			} else {
+				fromTables = fromTables.LEFT_JOIN(
+					table.DirectoryProjectsRoles.INNER_JOIN(
+						table.Projects,
+						table.DirectoryProjectsRoles.ProjectID.EQ(table.Projects.ID),
+					),
+					projectRolesWhereCondition,
+				)
+			}
 			columnsToSelect = append(columnsToSelect, jet.ProjectionList{
 				table.Projects.ID.AS("project.project_id"),
 				table.Projects.Name.AS("project.project_name"),
@@ -281,9 +273,8 @@ func (n *directory) getUsers() error {
 				table.DirectoryProjectsRoles.CreatedOn.AS("project_roles.project_role_created_on"),
 			})
 		}
-		selectQuery := jet.SELECT(columnsToSelect).FROM(fromTables)
 		n.RetrieveUsers = []RetrieveUser{}
-		if err = selectQuery.Query(db, &n.RetrieveUsers); err != nil {
+		if err = jet.SELECT(columnsToSelect).FROM(fromTables).Query(db, &n.RetrieveUsers); err != nil {
 			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Get users by %v failed | reason: %v", n.CurrentUser.DirectoryID, err))
 			return lib.NewError(http.StatusInternalServerError, "Could not get users")
 		}
@@ -308,25 +299,19 @@ func (n *directory) createUser() error {
 		newDirectoryIam.Email = &n.DirectoryCreate.Email
 	}
 
-	insertQuery := table.Directory.
-		INSERT(table.Directory.Name, table.Directory.Contacts).
-		MODEL(n.DirectoryCreate).
-		RETURNING(table.Directory.ID)
-
 	n.Directory = model.Directory{}
-	if err = insertQuery.Query(db, &n.Directory); err != nil {
+	if err = table.Directory.INSERT(table.Directory.Name, table.Directory.Contacts).MODEL(n.DirectoryCreate).RETURNING(table.Directory.ID).Query(db, &n.Directory); err != nil {
 		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Creating user by %v failed | reason: %v", n.CurrentUser.DirectoryID, err))
 		return lib.NewError(http.StatusInternalServerError, "Could not create new user")
 	}
 
 	if len(n.DirectoryCreate.Email) > 7 {
 		newDirectoryIam.DirectoryID = n.Directory.ID
-		insertQuery = table.DirectoryIam.
-			INSERT(table.DirectoryIam.DirectoryID, table.DirectoryIam.Email).
-			MODEL(newDirectoryIam)
-
-		if _, err = insertQuery.Exec(db); err != nil {
+		if _, err = table.DirectoryIam.INSERT(table.DirectoryIam.DirectoryID, table.DirectoryIam.Email).MODEL(newDirectoryIam).Exec(db); err != nil {
 			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Creating user iam for %v by %v failed | reason: %v", newDirectoryIam.DirectoryID, n.CurrentUser.DirectoryID, err))
+			if _, err := table.Directory.DELETE().WHERE(table.Directory.ID.EQ(jet.UUID(n.Directory.ID))).Exec(db); err != nil {
+				intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Delete user %v due to failed iam creation by %v failed | reason: %v", n.Directory.ID, n.CurrentUser.DirectoryID, err))
+			}
 			return lib.NewError(http.StatusInternalServerError, "Could not create new user iam")
 		}
 	}
@@ -337,10 +322,7 @@ func (n *directory) createUser() error {
 			ProjectID:     n.DirectoryCreate.ProjectID,
 			ProjectRoleID: lib.ROLE_EXPLORER,
 		}
-		insertQuery = table.DirectoryProjectsRoles.
-			INSERT(table.DirectoryProjectsRoles.ProjectID, table.DirectoryProjectsRoles.DirectoryID, table.DirectoryProjectsRoles.ProjectRoleID).
-			MODEL(newDirectoryProjectRoles)
-		if _, err = insertQuery.Exec(db); err != nil {
+		if _, err = table.DirectoryProjectsRoles.INSERT(table.DirectoryProjectsRoles.ProjectID, table.DirectoryProjectsRoles.DirectoryID, table.DirectoryProjectsRoles.ProjectRoleID).MODEL(newDirectoryProjectRoles).Exec(db); err != nil {
 			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Add explorer role for %v in project %v by %v failed | reason: %v", newDirectoryProjectRoles.DirectoryID, newDirectoryProjectRoles.ProjectID, n.CurrentUser.DirectoryID, err))
 			return lib.NewError(http.StatusInternalServerError, "Could not add default explorer role")
 		}
@@ -351,10 +333,7 @@ func (n *directory) createUser() error {
 			DirectoryID: n.Directory.ID,
 		}
 
-		insertQuery = table.DirectorySystemUsers.
-			INSERT(table.DirectorySystemUsers.DirectoryID).
-			MODEL(newSystemUser)
-		if _, err := insertQuery.Exec(db); err != nil {
+		if _, err := table.DirectorySystemUsers.INSERT(table.DirectorySystemUsers.DirectoryID).MODEL(newSystemUser).Exec(db); err != nil {
 			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Add system user %v by %v failed | reason: %v", newSystemUser.DirectoryID, n.CurrentUser.DirectoryID, err))
 			return lib.NewError(http.StatusInternalServerError, "Could not add system user")
 		}

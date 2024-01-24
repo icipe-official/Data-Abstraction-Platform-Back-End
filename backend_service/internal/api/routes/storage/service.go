@@ -37,25 +37,92 @@ func (n *storage) getStorages() error {
 	}
 	defer db.Close()
 
-	selectQuery := jet.SELECT(table.Storage.AllColumns, table.StorageTypes.AllColumns).
+	selectQuery := jet.SELECT(
+		table.Storage.ID.AS("retrieve_storage.id"),
+		table.Storage.StorageTypeID.AS("retrieve_storage.storage_type_id"),
+		table.StorageTypes.Properties.AS("retrieve_storage.storage_type_properties"),
+		table.Storage.Name.AS("retrieve_storage.name"),
+		table.Storage.Storage.AS("retrieve_storage.storage"),
+		table.Storage.IsActive.AS("retrieve_storage.is_active"),
+		table.Storage.CreatedOn.AS("retrieve_storage.created_on"),
+		table.Storage.LastUpdatedOn.AS("retrieve_storage.last_updated_on")).
 		FROM(table.Storage.INNER_JOIN(table.StorageTypes, table.Storage.StorageTypeID.EQ(table.StorageTypes.ID)))
 
 	if n.StorageID != uuid.Nil {
 		selectQuery = selectQuery.WHERE(table.Storage.ID.EQ(jet.UUID(n.StorageID)))
-		n.StorageStorageType = storageStorageType{}
-		if err = selectQuery.Query(db, &n.StorageStorageType); err != nil {
+		n.RetrieveStorage = RetrieveStorage{}
+		if err = selectQuery.Query(db, &n.RetrieveStorage); err != nil {
 			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Get storage %v by %v failed | reason: %v", n.StorageID, n.CurrentUser.DirectoryID, err))
 			return lib.NewError(http.StatusInternalServerError, "Could not get storage")
 		}
 	} else {
-		n.StoragesStorageType = []storageStorageType{}
+		var whereCondition jet.BoolExpression
+		isWhereClauseSet := false
+		if n.CreatedOnGreaterThan != "" {
+			cogtCondition := table.Storage.CreatedOn.GT_EQ(jet.TO_TIMESTAMP(jet.String(n.CreatedOnGreaterThan), jet.String("YYYY-MM-DD")))
+			if isWhereClauseSet {
+				whereCondition = whereCondition.AND(cogtCondition)
+			} else {
+				whereCondition = cogtCondition
+				isWhereClauseSet = true
+			}
+		}
+		if n.CreatedOnLessThan != "" {
+			coltCondition := table.Storage.CreatedOn.LT_EQ(jet.TO_TIMESTAMP(jet.String(n.CreatedOnLessThan), jet.String("YYYY-MM-DD")))
+			if isWhereClauseSet {
+				whereCondition = whereCondition.AND(coltCondition)
+			} else {
+				whereCondition = coltCondition
+				isWhereClauseSet = true
+			}
+		}
+		if n.LastUpdatedOnOnGreaterThan != "" {
+			cogtCondition := table.Storage.LastUpdatedOn.GT_EQ(jet.TO_TIMESTAMP(jet.String(n.LastUpdatedOnOnGreaterThan), jet.String("YYYY-MM-DD")))
+			if isWhereClauseSet {
+				whereCondition = whereCondition.AND(cogtCondition)
+			} else {
+				whereCondition = cogtCondition
+				isWhereClauseSet = true
+			}
+		}
+		if n.LastUpdatedOnLessThan != "" {
+			coltCondition := table.Storage.LastUpdatedOn.LT_EQ(jet.TO_TIMESTAMP(jet.String(n.LastUpdatedOnLessThan), jet.String("YYYY-MM-DD")))
+			if isWhereClauseSet {
+				whereCondition = whereCondition.AND(coltCondition)
+			} else {
+				whereCondition = coltCondition
+				isWhereClauseSet = true
+			}
+		}
+		if isWhereClauseSet {
+			selectQuery = selectQuery.WHERE(whereCondition)
+		}
 		if n.Limit > 0 {
 			selectQuery = selectQuery.LIMIT(int64(n.Limit))
 		}
 		if n.Offset > 0 {
 			selectQuery = selectQuery.OFFSET(int64(n.Offset))
 		}
-		if err = selectQuery.Query(db, &n.StoragesStorageType); err != nil {
+		if n.SortyBy != "" {
+			switch n.SortyBy {
+			case table.Storage.CreatedOn.Name():
+				if n.SortByOrder == "asc" {
+					selectQuery = selectQuery.ORDER_BY(table.Storage.CreatedOn.ASC())
+				} else {
+					selectQuery = selectQuery.ORDER_BY(table.Storage.CreatedOn.DESC())
+				}
+			case table.Storage.LastUpdatedOn.Name():
+				if n.SortByOrder == "asc" {
+					selectQuery = selectQuery.ORDER_BY(table.Storage.LastUpdatedOn.ASC())
+				} else {
+					selectQuery = selectQuery.ORDER_BY(table.Storage.LastUpdatedOn.DESC())
+				}
+			}
+		}
+
+		n.RetrieveStorages = []RetrieveStorage{}
+
+		if err = selectQuery.Query(db, &n.RetrieveStorages); err != nil {
 			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Get storages by %v failed | reason: %v", n.CurrentUser.DirectoryID, err))
 			return lib.NewError(http.StatusInternalServerError, "Could not get storages")
 		}
@@ -213,33 +280,23 @@ func (n *storage) deleteStorageProject() (int64, error) {
 	}
 	defer db.Close()
 
-	var whereClause jet.BoolExpression
-	whereClauseSet := false
-	if n.StorageProject.ProjectID != uuid.Nil {
-		whereClause = table.StorageProjects.ProjectID.EQ(jet.UUID(n.StorageProject.ProjectID))
-		whereClauseSet = true
-	}
-	if n.StorageProject.StorageID != uuid.Nil {
-		condition := table.StorageProjects.StorageID.EQ(jet.UUID(n.StorageProject.StorageID))
-		if whereClauseSet {
-			whereClause = whereClause.AND(condition)
-		} else {
-			whereClause = condition
-		}
+	if n.AddRemoveStorageProject.ProjectID == uuid.Nil || len(n.AddRemoveStorageProject.StorageIDs) < 1 {
+		return 0, lib.NewError(http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 	}
 
-	deleteQuery := table.StorageProjects.DELETE().WHERE(whereClause)
-	if sqlResults, err := deleteQuery.Exec(db); err != nil {
-		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Delete storage project, project %v and/or stroage %v by %v, failed | reason: %v", n.StorageProject.ProjectID, n.StorageProject.StorageID, n.CurrentUser.DirectoryID, err))
-		return -1, lib.NewError(http.StatusInternalServerError, "Could not delete storage project")
-	} else {
-		if deletedRows, err := sqlResults.RowsAffected(); err != nil {
-			intpkglib.Log(intpkglib.LOG_WARNING, currentSection, fmt.Sprintf("Determining no. of storage projects deleted failed while deleting project %v and/or storage %v | reason: %v", n.StorageProject.ProjectID, n.StorageProject.StorageID, err))
-			return -1, nil
-		} else {
-			return deletedRows, err
+	var deletedRows int64 = 0
+	for _, value := range n.AddRemoveStorageProject.StorageIDs {
+		if _, err := table.StorageProjects.DELETE().WHERE(
+			table.StorageProjects.ProjectID.EQ(jet.UUID(n.AddRemoveStorageProject.ProjectID)).
+				AND(table.StorageProjects.StorageID.EQ(jet.UUID(value)))).
+			Exec(db); err != nil {
+			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Delete storage project, project %v and/or stroage %v by %v, failed | reason: %v", n.StorageProject.ProjectID, n.StorageProject.StorageID, n.CurrentUser.DirectoryID, err))
+			return -1, lib.NewError(http.StatusInternalServerError, "Could not delete storage project")
 		}
+		deletedRows += 1
 	}
+
+	return deletedRows, nil
 }
 
 func (n *storage) deleteFileInfo() (int64, error) {
@@ -249,9 +306,7 @@ func (n *storage) deleteFileInfo() (int64, error) {
 	}
 	defer db.Close()
 
-	deleteQuery := table.Files.DELETE().WHERE(table.Files.ID.EQ(jet.UUID(n.File.ID)))
-
-	if sqlResults, err := deleteQuery.Exec(db); err != nil {
+	if sqlResults, err := table.Files.DELETE().WHERE(table.Files.ID.EQ(jet.UUID(n.File.ID))).Exec(db); err != nil {
 		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Delete file %v by %v failed | reason: %v", n.File.ID, n.CurrentUser.DirectoryID, err))
 		return -1, lib.NewError(http.StatusInternalServerError, "Could not delete file info")
 	} else {
@@ -271,17 +326,11 @@ func (n *storage) getFile() error {
 	}
 	defer db.Close()
 
-	selectQuery := jet.SELECT(
-		table.Files.DirectoryID,
-		table.Files.ContentType,
-		table.Storage.StorageTypeID,
-		table.Storage.Storage,
-	).
-		FROM(table.Files.INNER_JOIN(table.Storage, table.Files.StorageID.EQ(table.Storage.ID))).
-		WHERE(table.Files.ID.EQ(jet.UUID(n.File.ID)).AND(table.Files.ProjectID.EQ(jet.UUID(n.File.ProjectID))))
-
 	n.FileStorage = fileStorage{}
-	if err := selectQuery.Query(db, &n.FileStorage); err != nil {
+	if err := jet.SELECT(table.Files.DirectoryID, table.Files.ContentType, table.Storage.StorageTypeID, table.Storage.Storage).
+		FROM(table.Files.INNER_JOIN(table.Storage, table.Files.StorageID.EQ(table.Storage.ID))).
+		WHERE(table.Files.ID.EQ(jet.UUID(n.File.ID)).AND(table.Files.ProjectID.EQ(jet.UUID(n.File.ProjectID)))).
+		Query(db, &n.FileStorage); err != nil {
 		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Get info for file %v by %v failed | reason: %v", n.File.ID, n.CurrentUser.DirectoryID, err))
 		return lib.NewError(http.StatusInternalServerError, "Could not get file info")
 	}
@@ -300,18 +349,12 @@ func (n *storage) createFile() error {
 	}
 	defer db.Close()
 
-	selectQuery := jet.SELECT(
-		table.StorageProjects.CreatedOn,
-		table.Storage.StorageTypeID,
-		table.Storage.Storage,
-	).FROM(
-		table.StorageProjects.INNER_JOIN(table.Storage, table.StorageProjects.StorageID.EQ(table.Storage.ID).AND(table.Storage.IsActive.IS_TRUE())),
-	).WHERE(
-		table.StorageProjects.StorageID.EQ(jet.UUID(n.StorageProject.StorageID)).AND(table.StorageProjects.ProjectID.EQ(jet.UUID(n.StorageProject.ProjectID))))
-
 	n.ProjectStorage = storageProject{}
 
-	if err := selectQuery.Query(db, &n.ProjectStorage); err != nil {
+	if err := jet.SELECT(table.StorageProjects.CreatedOn, table.Storage.StorageTypeID, table.Storage.Storage).
+		FROM(table.StorageProjects.INNER_JOIN(table.Storage, table.StorageProjects.StorageID.EQ(table.Storage.ID).AND(table.Storage.IsActive.IS_TRUE()))).
+		WHERE(table.StorageProjects.StorageID.EQ(jet.UUID(n.StorageProject.StorageID)).AND(table.StorageProjects.ProjectID.EQ(jet.UUID(n.StorageProject.ProjectID)))).
+		Query(db, &n.ProjectStorage); err != nil {
 		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Get storage %v for project %v by %v failed | reason: %v", n.StorageProject.StorageID, n.StorageProject.ProjectID, n.CurrentUser.DirectoryID, err))
 		return lib.NewError(http.StatusInternalServerError, "Could not get storage for project")
 	}
@@ -320,16 +363,11 @@ func (n *storage) createFile() error {
 		return lib.NewError(http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 	}
 
-	insertQuery := table.Files.
-		INSERT(
-			table.Files.StorageID,
-			table.Files.ProjectID,
-			table.Files.DirectoryID,
-			table.Files.Tags,
-			table.Files.ContentType,
-		).MODEL(n.File).RETURNING(table.Files.ID, table.Files.CreatedOn)
-
-	if err := insertQuery.Query(db, &n.File); err != nil {
+	if err := table.Files.
+		INSERT(table.Files.StorageID, table.Files.ProjectID, table.Files.DirectoryID, table.Files.Tags, table.Files.ContentType).
+		MODEL(n.File).
+		RETURNING(table.Files.ID, table.Files.CreatedOn).
+		Query(db, &n.File); err != nil {
 		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Create file entry in storage %v for project %v by %v failed | reason: %v", n.StorageProject.StorageID, n.StorageProject.ProjectID, n.CurrentUser.DirectoryID, err))
 		return lib.NewError(http.StatusInternalServerError, "Could not create file")
 	}
@@ -344,26 +382,34 @@ func (n *storage) createStorageProject() error {
 	}
 	defer db.Close()
 
-	insertQuery := table.StorageProjects.
-		INSERT(table.StorageProjects.ProjectID, table.StorageProjects.StorageID).
-		MODEL(n.StorageProject).
-		RETURNING(table.StorageProjects.ProjectID, table.StorageProjects.StorageID, table.StorageProjects.CreatedOn)
+	if n.AddRemoveStorageProject.ProjectID == uuid.Nil || len(n.AddRemoveStorageProject.StorageIDs) < 1 {
+		return lib.NewError(http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+	}
 
-	if err := insertQuery.Query(db, &n.StorageProject); err != nil {
+	newProjectStorages := []model.StorageProjects{}
+	for _, v := range n.AddRemoveStorageProject.StorageIDs {
+		newProjectStorages = append(newProjectStorages, model.StorageProjects{StorageID: v, ProjectID: n.AddRemoveStorageProject.ProjectID})
+	}
+
+	if _, err := table.StorageProjects.
+		INSERT(table.StorageProjects.ProjectID, table.StorageProjects.StorageID).
+		MODELS(newProjectStorages).
+		Exec(db); err != nil {
 		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Add storage %v to project %v by %v failed | reason: %v", n.StorageProject.StorageID, n.StorageProject.ProjectID, n.CurrentUser.DirectoryID, err))
 		return lib.NewError(http.StatusInternalServerError, "Could not add storage to project")
 	}
 
-	n.Storage = model.Storage{}
-	selectQuery := table.Storage.SELECT(table.Storage.AllColumns).WHERE(table.Storage.ID.EQ(jet.UUID(n.StorageProject.StorageID)))
-	if err := selectQuery.Query(db, &n.Storage); err != nil {
-		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Get storage %v by %v for folder creation failed | reason: %v", n.StorageProject.StorageID, n.CurrentUser.DirectoryID, err))
-		return lib.NewError(http.StatusInternalServerError, "Could not create project folder")
-	}
+	for _, nps := range newProjectStorages {
+		n.Storage = model.Storage{}
+		if err := table.Storage.SELECT(table.Storage.AllColumns).WHERE(table.Storage.ID.EQ(jet.UUID(nps.StorageID))).Query(db, &n.Storage); err != nil {
+			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Get storage %v by %v for folder creation failed | reason: %v", nps.StorageID, n.CurrentUser.DirectoryID, err))
+			return lib.NewError(http.StatusInternalServerError, "Could not create project folder")
+		}
 
-	if err := n.createFolder(n.StorageProject.ProjectID.String()); err != nil {
-		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Create project folder %v in storage %v by %v failed | reason: %v", n.StorageProject.ProjectID, n.StorageProject.StorageID, n.CurrentUser.DirectoryID, err))
-		return lib.NewError(http.StatusInternalServerError, "Could not create project folder")
+		if err := n.createFolder(nps.ProjectID.String()); err != nil {
+			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Create project folder %v in storage %v by %v failed | reason: %v", nps.ProjectID, nps.StorageID, n.CurrentUser.DirectoryID, err))
+			return lib.NewError(http.StatusInternalServerError, "Could not create project folder")
+		}
 	}
 
 	return nil
@@ -376,14 +422,12 @@ func (n *storage) deleteStorage() (int64, error) {
 	}
 	defer db.Close()
 
-	deleteQuery := table.Storage.DELETE().WHERE(table.Storage.ID.EQ(jet.UUID(n.StorageID)))
-
-	if sqlResults, err := deleteQuery.Exec(db); err != nil {
-		updateQuery := table.Storage.
+	if sqlResults, err := table.Storage.DELETE().WHERE(table.Storage.ID.EQ(jet.UUID(n.StorageID))).Exec(db); err != nil {
+		if sqlResults, err := table.Storage.
 			UPDATE(table.Storage.IsActive).
 			MODEL(model.Storage{IsActive: false}).
-			WHERE(table.Storage.ID.EQ(jet.UUID(n.StorageID)))
-		if sqlResults, err := updateQuery.Exec(db); err != nil {
+			WHERE(table.Storage.ID.EQ(jet.UUID(n.StorageID))).
+			Exec(db); err != nil {
 			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Deactivate storage %v by %v failed | reason: %v", n.StorageID, n.CurrentUser.DirectoryID, err))
 			return -1, lib.NewError(http.StatusInternalServerError, "Could not deactivate storage")
 		} else {
@@ -431,13 +475,12 @@ func (n *storage) updateStorage() error {
 	}
 	defer db.Close()
 
-	updateQuery := table.Storage.
+	if err := table.Storage.
 		UPDATE(columnsToUpdate).
 		MODEL(n.StorageUpdate.Storage).
 		WHERE(table.Storage.ID.EQ(jet.UUID(n.StorageID))).
-		RETURNING(table.Storage.ID, table.Storage.LastUpdatedOn)
-
-	if err := updateQuery.Query(db, &n.StorageUpdate.Storage); err != nil {
+		RETURNING(table.Storage.ID, table.Storage.LastUpdatedOn).
+		Query(db, &n.StorageUpdate.Storage); err != nil {
 		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Update storage %v failed | reason: %v", n.StorageID, err))
 		return lib.NewError(http.StatusInternalServerError, "Could not update storage")
 	}
@@ -456,12 +499,11 @@ func (n *storage) createStorage() error {
 	}
 	defer db.Close()
 
-	insertQuery := table.Storage.
+	if err := table.Storage.
 		INSERT(table.Storage.StorageTypeID, table.Storage.Name, table.Storage.Storage).
 		MODEL(n.Storage).
-		RETURNING(table.Storage.ID)
-
-	if err := insertQuery.Query(db, &n.Storage); err != nil {
+		RETURNING(table.Storage.ID).
+		Query(db, &n.Storage); err != nil {
 		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Create storage by %v failed | reason: %v", n.CurrentUser.DirectoryID, err))
 		return lib.NewError(http.StatusInternalServerError, "Could not create storage")
 	}

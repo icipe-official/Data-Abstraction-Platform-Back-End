@@ -14,7 +14,7 @@ const currentSection = "Directory"
 type directory struct {
 	DirectoryUpdate struct {
 		Directory    model.Directory
-		IsSystemUser string
+		IsSystemUser bool
 		Columns      []string
 	}
 	SearchQuery              string    `json:"-"`

@@ -44,13 +44,16 @@ func (n *projects) deleteProject() (int64, error) {
 	}
 	defer db.Close()
 
-	deleteQuery := table.Projects.DELETE().WHERE(table.Projects.ID.EQ(jet.UUID(n.ProjectID)).AND(table.Projects.DirectoryID.EQ(jet.UUID(n.CurrentUser.DirectoryID))))
-
+	whereCondition := table.Projects.ID.EQ(jet.UUID(n.ProjectID))
+	if !lib.IsUserAuthorized(true, uuid.Nil, []string{}, n.CurrentUser, nil) {
+		whereCondition = whereCondition.AND(table.Projects.DirectoryID.EQ(jet.UUID(n.CurrentUser.DirectoryID)))
+	}
+	deleteQuery := table.Projects.DELETE().WHERE(whereCondition)
 	if sqlResults, err := deleteQuery.Exec(db); err != nil {
 		updateQuery := table.Projects.
 			UPDATE(table.Projects.IsActive).
 			MODEL(model.Projects{IsActive: false}).
-			WHERE(table.Projects.ID.EQ(jet.UUID(n.ProjectID)).AND(table.Projects.DirectoryID.EQ(jet.UUID(n.CurrentUser.DirectoryID))))
+			WHERE(whereCondition)
 		if sqlResults, err := updateQuery.Exec(db); err != nil {
 			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Deactivate project %v by %v failed | reason: %v", n.ProjectID, n.CurrentUser.DirectoryID, err))
 			return -1, lib.NewError(http.StatusInternalServerError, "Could not deactivate project")
@@ -84,6 +87,8 @@ func (n *projects) updateProject() error {
 			if len(n.ProjectUpdate.Project.Description) >= 3 {
 				columnsToUpdate = append(columnsToUpdate, table.Projects.Description)
 			}
+		case table.Projects.IsActive.Name():
+			columnsToUpdate = append(columnsToUpdate, table.Projects.IsActive)
 		}
 	}
 
@@ -149,16 +154,42 @@ func (n *projects) getProjects() error {
 
 	var selectQuery jet.SelectStatement
 	if n.QuickSearch == "true" {
-		selectQuery = jet.SELECT(table.Projects.ID, table.Projects.Name, table.Projects.Description).
-			FROM(table.Projects)
+		selectQuery = jet.SELECT(
+			table.Projects.ID.AS("retrieve_project.id"),
+			table.Projects.Name.AS("retrieve_project.name"),
+			table.Projects.Description.AS("retrieve_project.description"),
+		).FROM(table.Projects)
 	} else {
-		selectQuery = jet.SELECT(table.Projects.AllColumns, table.Directory.Name, table.Directory.Contacts).
-			FROM(table.Projects.INNER_JOIN(table.Directory, table.Projects.DirectoryID.EQ(table.Directory.ID)))
+		var fromTables jet.ReadableTable = table.Projects.INNER_JOIN(table.Directory, table.Projects.DirectoryID.EQ(table.Directory.ID))
+		columnsToSelect := make(jet.ProjectionList, 0)
+		columnsToSelect = append(columnsToSelect, jet.ProjectionList{
+			table.Projects.ID.AS("retrieve_project.id"),
+			table.Projects.Name.AS("retrieve_project.name"),
+			table.Projects.Description.AS("retrieve_project.description"),
+			table.Projects.CreatedOn.AS("retrieve_project.created_on"),
+			table.Projects.LastUpdatedOn.AS("retrieve_project.last_updated_on"),
+			table.Projects.IsActive.AS("retrieve_project.is_active"),
+			table.Projects.DirectoryID.AS("retrieve_project.owner_directory_id"),
+			table.Directory.Name.AS("retrieve_project.owner_directory_name"),
+			table.Directory.Contacts.AS("retrieve_project.owner_directory_contacts"),
+		})
+		columnsToSelect = append(columnsToSelect, jet.ProjectionList{
+			table.StorageProjects.StorageID.AS("storage.storage_id"),
+			table.Storage.Name.AS("storage.storage_name"),
+		})
+		fromTables = fromTables.LEFT_JOIN(
+			table.StorageProjects.INNER_JOIN(
+				table.Storage,
+				table.StorageProjects.StorageID.EQ(table.Storage.ID),
+			),
+			table.Projects.ID.EQ(table.StorageProjects.ProjectID),
+		)
+		selectQuery = jet.SELECT(columnsToSelect).FROM(fromTables)
 	}
 	if n.ProjectID != uuid.Nil {
 		selectQuery = selectQuery.WHERE(table.Projects.ID.EQ(jet.UUID(n.ProjectID)))
-		n.ProjectDirectory = projectsDirectory{}
-		if err = selectQuery.Query(db, &n.ProjectDirectory); err != nil {
+		n.RetrieveProject = RetrieveProject{}
+		if err = selectQuery.Query(db, &n.RetrieveProject); err != nil {
 			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Get project %v by %v failed | reason: %v", n.ProjectID, n.CurrentUser.DirectoryID, err))
 			return lib.NewError(http.StatusInternalServerError, "Could not get project")
 		}
@@ -228,8 +259,8 @@ func (n *projects) getProjects() error {
 		if n.Offset > 0 {
 			selectQuery = selectQuery.OFFSET(int64(n.Offset))
 		}
-		n.ProjectsDirectory = []projectsDirectory{}
-		if err = selectQuery.Query(db, &n.ProjectsDirectory); err != nil {
+		n.RetrieveProjects = []RetrieveProject{}
+		if err = selectQuery.Query(db, &n.RetrieveProjects); err != nil {
 			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Get projects by %v failed | reason: %v", n.CurrentUser.DirectoryID, err))
 			return lib.NewError(http.StatusInternalServerError, "Could not get projects")
 		}

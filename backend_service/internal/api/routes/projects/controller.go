@@ -92,7 +92,7 @@ func Router() *chi.Mux {
 		}
 
 		UpdateProject.CurrentUser = lib.CtxGetCurrentUser(r)
-		if !lib.IsUserAuthorized(false, UpdateProject.ProjectID, []string{lib.ROLE_PROJECT_ADMIN}, UpdateProject.CurrentUser, w) {
+		if !lib.IsUserAuthorized(true, UpdateProject.ProjectID, []string{lib.ROLE_PROJECT_ADMIN}, UpdateProject.CurrentUser, w) {
 			return
 		}
 
@@ -120,7 +120,7 @@ func Router() *chi.Mux {
 			if err := RetrieveProjects.getProjects(); err != nil {
 				lib.SendErrorResponse(err, w)
 			} else {
-				lib.SendJsonResponse(RetrieveProjects.ProjectDirectory, w)
+				lib.SendJsonResponse(RetrieveProjects.RetrieveProject, w)
 				intpkglib.Log(intpkglib.LOG_DEBUG, currentSection, fmt.Sprintf("Get project %v by %v successful", projectId, RetrieveProjects.CurrentUser.DirectoryID))
 			}
 		} else {
@@ -154,7 +154,7 @@ func Router() *chi.Mux {
 			if err := RetrieveProjects.getProjects(); err != nil {
 				lib.SendErrorResponse(err, w)
 			} else {
-				lib.SendJsonResponse(RetrieveProjects.ProjectsDirectory, w)
+				lib.SendJsonResponse(RetrieveProjects.RetrieveProjects, w)
 				intpkglib.Log(intpkglib.LOG_DEBUG, currentSection, fmt.Sprintf("Get projects by %v successful", RetrieveProjects.CurrentUser.DirectoryID))
 			}
 		}

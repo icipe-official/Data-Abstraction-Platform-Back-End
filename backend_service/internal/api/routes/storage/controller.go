@@ -198,7 +198,7 @@ func Router() *chi.Mux {
 	router.Delete("/project", func(w http.ResponseWriter, r *http.Request) {
 		var DeleteStorageProject storage
 
-		if err := json.NewDecoder(r.Body).Decode(&DeleteStorageProject.StorageProject); err != nil || (model.StorageProjects{} == DeleteStorageProject.StorageProject) {
+		if err := json.NewDecoder(r.Body).Decode(&DeleteStorageProject.AddRemoveStorageProject); err != nil {
 			lib.SendErrorResponse(lib.NewError(http.StatusBadRequest, http.StatusText(http.StatusBadRequest)), w)
 			return
 		}
@@ -212,7 +212,7 @@ func Router() *chi.Mux {
 			lib.SendErrorResponse(err, w)
 		} else {
 			lib.SendJsonResponse(struct{ StorageProjectsAffected int64 }{StorageProjectsAffected: storageProjectsAffected}, w)
-			intpkglib.Log(intpkglib.LOG_INFO, currentSection, fmt.Sprintf("In delete storage project, project %v and/or storage %v by %v, %v were affected", DeleteStorageProject.StorageProject.ProjectID, DeleteStorageProject.StorageProject.StorageID, DeleteStorageProject.CurrentUser.DirectoryID, storageProjectsAffected))
+			intpkglib.Log(intpkglib.LOG_INFO, currentSection, fmt.Sprintf("In delete storage for project %v by %v, %v were affected", DeleteStorageProject.AddRemoveStorageProject.ProjectID, DeleteStorageProject.CurrentUser.DirectoryID, storageProjectsAffected))
 		}
 	})
 
@@ -247,7 +247,7 @@ func Router() *chi.Mux {
 
 	router.Post("/project", func(w http.ResponseWriter, r *http.Request) {
 		var NewStorageProject storage
-		if err := json.NewDecoder(r.Body).Decode(&NewStorageProject.StorageProject); err != nil || (model.StorageProjects{} == NewStorageProject.StorageProject) {
+		if err := json.NewDecoder(r.Body).Decode(&NewStorageProject.AddRemoveStorageProject); err != nil {
 			lib.SendErrorResponse(lib.NewError(http.StatusBadRequest, http.StatusText(http.StatusBadRequest)), w)
 			return
 		}
@@ -260,8 +260,8 @@ func Router() *chi.Mux {
 		if err := NewStorageProject.createStorageProject(); err != nil {
 			lib.SendErrorResponse(err, w)
 		} else {
-			lib.SendJsonResponse(struct{ CreatedOn time.Time }{CreatedOn: NewStorageProject.StorageProject.CreatedOn}, w)
-			intpkglib.Log(intpkglib.LOG_INFO, currentSection, fmt.Sprintf("Storage %v added to project %v by %v", NewStorageProject.StorageProject.StorageID, NewStorageProject.StorageProject.ProjectID, NewStorageProject.CurrentUser.DirectoryID))
+			lib.SendJsonResponse(struct{ CreatedOn time.Time }{CreatedOn: time.Now()}, w)
+			intpkglib.Log(intpkglib.LOG_INFO, currentSection, fmt.Sprintf("Storage added to project %v by %v", NewStorageProject.AddRemoveStorageProject.ProjectID, NewStorageProject.CurrentUser.DirectoryID))
 		}
 	})
 
@@ -294,7 +294,7 @@ func Router() *chi.Mux {
 			if err := RetrieveStorage.getStorages(); err != nil {
 				lib.SendErrorResponse(err, w)
 			} else {
-				lib.SendJsonResponse(RetrieveStorage.StorageStorageType, w)
+				lib.SendJsonResponse(RetrieveStorage.RetrieveStorage, w)
 				intpkglib.Log(intpkglib.LOG_DEBUG, currentSection, fmt.Sprintf("Get storage %v by %v successful", storageId, RetrieveStorage.CurrentUser.DirectoryID))
 			}
 		} else {
@@ -304,10 +304,28 @@ func Router() *chi.Mux {
 			if offset, err := strconv.Atoi(r.URL.Query().Get("o")); err == nil {
 				RetrieveStorage.Offset = offset
 			}
+			if cogt := r.URL.Query().Get("cogt"); cogt != "" {
+				RetrieveStorage.CreatedOnGreaterThan = cogt
+			}
+			if colt := r.URL.Query().Get("colt"); colt != "" {
+				RetrieveStorage.CreatedOnLessThan = colt
+			}
+			if logt := r.URL.Query().Get("logt"); logt != "" {
+				RetrieveStorage.LastUpdatedOnOnGreaterThan = logt
+			}
+			if lolt := r.URL.Query().Get("lolt"); lolt != "" {
+				RetrieveStorage.LastUpdatedOnLessThan = lolt
+			}
+			if sb := r.URL.Query().Get("sb"); sb != "" {
+				RetrieveStorage.SortyBy = sb
+			}
+			if sbo := r.URL.Query().Get("sbo"); sbo != "" {
+				RetrieveStorage.SortByOrder = sbo
+			}
 			if err := RetrieveStorage.getStorages(); err != nil {
 				lib.SendErrorResponse(err, w)
 			} else {
-				lib.SendJsonResponse(RetrieveStorage.StoragesStorageType, w)
+				lib.SendJsonResponse(RetrieveStorage.RetrieveStorages, w)
 				intpkglib.Log(intpkglib.LOG_DEBUG, currentSection, fmt.Sprintf("Get storages by %v successful", RetrieveStorage.CurrentUser.DirectoryID))
 			}
 		}
