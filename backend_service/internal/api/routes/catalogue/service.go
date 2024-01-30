@@ -18,9 +18,12 @@ func (n *catalogue) deleteCatalogue() (int64, error) {
 	}
 	defer db.Close()
 
-	deleteQuery := table.Catalogue.DELETE().WHERE(table.Catalogue.ID.EQ(jet.UUID(n.CatalogueID)).AND(table.Catalogue.DirectoryID.EQ(jet.UUID(n.CurrentUser.DirectoryID))))
+	whereCondition := table.Catalogue.ID.EQ(jet.UUID(n.CatalogueID))
+	if !lib.IsUserAuthorized(false, n.ProjectID, []string{lib.ROLE_PROJECT_ADMIN}, n.CurrentUser, nil) {
+		whereCondition = whereCondition.AND(table.Catalogue.DirectoryID.EQ(jet.UUID(n.CurrentUser.DirectoryID)))
+	}
 
-	if sqlResults, err := deleteQuery.Exec(db); err != nil {
+	if sqlResults, err := table.Catalogue.DELETE().WHERE(whereCondition).Exec(db); err != nil {
 		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Delete catalogue %v by %v failed | reason: %v", n.CatalogueID, n.CurrentUser.DirectoryID, err))
 		return -1, lib.NewError(http.StatusInternalServerError, "Could not delete catalogue")
 	} else {

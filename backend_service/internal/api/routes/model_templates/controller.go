@@ -29,6 +29,10 @@ func Router() *chi.Mux {
 
 		DeleteModelTemplate.CurrentUser = lib.CtxGetCurrentUser(r)
 
+		if projectId, err := lib.GetUUID(r.URL.Query().Get("pid")); err == nil {
+			DeleteModelTemplate.ProjectID = projectId
+		}
+
 		if modelTemplatesAffected, err := DeleteModelTemplate.deleteModelTemplate(); err != nil {
 			lib.SendErrorResponse(err, w)
 		} else {

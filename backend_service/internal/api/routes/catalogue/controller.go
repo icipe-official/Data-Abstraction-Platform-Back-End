@@ -28,6 +28,10 @@ func Router() *chi.Mux {
 
 		DeleteCatalogue.CurrentUser = lib.CtxGetCurrentUser(r)
 
+		if projectId, err := lib.GetUUID(r.URL.Query().Get("pid")); err == nil {
+			DeleteCatalogue.ProjectID = projectId
+		}
+
 		if cataloguesAffected, err := DeleteCatalogue.deleteCatalogue(); err != nil {
 			lib.SendErrorResponse(err, w)
 		} else {

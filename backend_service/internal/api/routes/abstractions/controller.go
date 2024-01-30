@@ -212,6 +212,10 @@ func Router() *chi.Mux {
 			DeleteAbstraction.AbstractionID = abstractionId
 		}
 
+		if projectId, err := lib.GetUUID(r.URL.Query().Get("pid")); err == nil {
+			DeleteAbstraction.ProjectID = projectId
+		}
+
 		DeleteAbstraction.CurrentUser = lib.CtxGetCurrentUser(r)
 
 		if abstractionsAffected, err := DeleteAbstraction.deleteAbstraction(); err != nil {

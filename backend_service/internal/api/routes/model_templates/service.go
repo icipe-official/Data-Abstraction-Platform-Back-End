@@ -18,9 +18,12 @@ func (n *modeltemplates) deleteModelTemplate() (int64, error) {
 	}
 	defer db.Close()
 
-	deleteQuery := table.ModelTemplates.DELETE().WHERE(table.ModelTemplates.ID.EQ(jet.UUID(n.ModelTemplateID)).AND(table.ModelTemplates.DirectoryID.EQ(jet.UUID(n.CurrentUser.DirectoryID))))
+	whereCondition := table.ModelTemplates.ID.EQ(jet.UUID(n.ProjectID))
+	if !lib.IsUserAuthorized(false, n.ProjectID, []string{lib.ROLE_PROJECT_ADMIN}, n.CurrentUser, nil) {
+		whereCondition = whereCondition.AND(table.ModelTemplates.DirectoryID.EQ(jet.UUID(n.CurrentUser.DirectoryID)))
+	}
 
-	if sqlResults, err := deleteQuery.Exec(db); err != nil {
+	if sqlResults, err := table.ModelTemplates.DELETE().WHERE(whereCondition).Exec(db); err != nil {
 		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Delete modeltemplate %v by %v failed | reason: %v", n.ModelTemplateID, n.CurrentUser.DirectoryID, err))
 		return -1, lib.NewError(http.StatusInternalServerError, "Could not delete modeltemplate")
 	} else {

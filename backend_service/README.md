@@ -102,7 +102,7 @@ Necessary values include: Project Roles, Directory Iam Ticket Types, and Storage
    bin/api
    ```
 
-## Miscellaneouse
+## Miscellaneous
 
 ### Generate/regenerate models and tables go
 

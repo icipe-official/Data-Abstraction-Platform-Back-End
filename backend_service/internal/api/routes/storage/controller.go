@@ -36,20 +36,24 @@ func Router() *chi.Mux {
 		}
 
 		if !lib.IsUserAuthorized(false, DeleteFile.File.ProjectID, []string{lib.ROLE_PROJECT_ADMIN}, DeleteFile.CurrentUser, nil) {
-			if DeleteFile.File.DirectoryID != DeleteFile.CurrentUser.DirectoryID {
+			if DeleteFile.FileStorage.DirectoryID != DeleteFile.CurrentUser.DirectoryID {
 				lib.SendErrorResponse(lib.NewError(http.StatusForbidden, http.StatusText(http.StatusForbidden)), w)
 				return
 			}
 		}
 
+		filesAffected, err := DeleteFile.deleteFileInfo()
+		if err != nil {
+			lib.SendErrorResponse(err, w)
+		}
 		if err := DeleteFile.deleteFile(); err != nil {
 			intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Delete file %v from project %v by %v failed | reason: %v", DeleteFile.File.ID, DeleteFile.File.ProjectID, DeleteFile.CurrentUser.DirectoryID, err))
+			if err := DeleteFile.recreateFileInfo(); err != nil {
+				lib.SendErrorResponse(err, w)
+				return
+			}
 			lib.SendErrorResponse(lib.NewError(http.StatusInternalServerError, "Could not delete file"), w)
 			return
-		}
-
-		if filesAffected, err := DeleteFile.deleteFileInfo(); err != nil {
-			lib.SendErrorResponse(err, w)
 		} else {
 			lib.SendJsonResponse(struct{ FilesAffected int64 }{FilesAffected: filesAffected}, w)
 			intpkglib.Log(intpkglib.LOG_INFO, currentSection, fmt.Sprintf("In delete file %v by %v, %v were affected", DeleteFile.File.ID, DeleteFile.CurrentUser.DirectoryID, filesAffected))

@@ -12,6 +12,22 @@ import (
 	"github.com/google/uuid"
 )
 
+func (n *storage) recreateFileInfo() error {
+	db, err := intpkglib.OpenDbConnection()
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	if _, err := table.Files.
+		INSERT(table.Files.ID, table.Files.StorageID, table.Files.ProjectID, table.Files.DirectoryID, table.Files.Tags, table.Files.ContentType, table.Files.CreatedOn).
+		MODEL(n.FileStorage).Exec(db); err != nil {
+		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Recreate file info of id %v by %v failed | reason: %v", n.FileStorage.ID, n.CurrentUser.DirectoryID, err))
+		return lib.NewError(http.StatusInternalServerError, "Could not get recreate file info after failed deletion")
+	}
+	return nil
+}
+
 func (n *storage) getStorageTypes() error {
 	db, err := intpkglib.OpenDbConnection()
 	if err != nil {
@@ -327,7 +343,7 @@ func (n *storage) getFile() error {
 	defer db.Close()
 
 	n.FileStorage = fileStorage{}
-	if err := jet.SELECT(table.Files.DirectoryID, table.Files.ContentType, table.Storage.StorageTypeID, table.Storage.Storage).
+	if err := jet.SELECT(table.Files.AllColumns, table.Storage.StorageTypeID, table.Storage.Storage).
 		FROM(table.Files.INNER_JOIN(table.Storage, table.Files.StorageID.EQ(table.Storage.ID))).
 		WHERE(table.Files.ID.EQ(jet.UUID(n.File.ID)).AND(table.Files.ProjectID.EQ(jet.UUID(n.File.ProjectID)))).
 		Query(db, &n.FileStorage); err != nil {

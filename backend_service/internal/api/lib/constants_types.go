@@ -53,6 +53,8 @@ var INTERNAL_SERVER_ERROR = NewError(http.StatusInternalServerError, http.Status
 
 const POSTGRES_NOT_FOUND_ERROR = "qrm: no rows in result set"
 
+const NO_SUCH_FILE_OR_DIRECTORY_ERROR = "no such file or directory"
+
 const DEFAULT_AUTHENTICATION_ERROR = "Could not authenticate user"
 
 const ACCESS_REFRESH_TOKEN_AGE = 60 * 60 * 24

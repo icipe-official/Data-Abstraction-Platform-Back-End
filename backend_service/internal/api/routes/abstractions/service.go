@@ -542,9 +542,12 @@ func (n *abstractions) deleteAbstraction() (int64, error) {
 	}
 	defer db.Close()
 
-	deleteQuery := table.Abstractions.DELETE().WHERE(table.Abstractions.ID.EQ(jet.UUID(n.AbstractionID)).AND(table.Abstractions.DirectoryID.EQ(jet.UUID(n.CurrentUser.DirectoryID))))
+	whereCondition := table.Abstractions.ID.EQ(jet.UUID(n.AbstractionID))
+	if !lib.IsUserAuthorized(false, n.ProjectID, []string{lib.ROLE_PROJECT_ADMIN}, n.CurrentUser, nil) {
+		whereCondition = whereCondition.AND(table.Abstractions.DirectoryID.EQ(jet.UUID(n.CurrentUser.DirectoryID)))
+	}
 
-	if sqlResults, err := deleteQuery.Exec(db); err != nil {
+	if sqlResults, err := table.Abstractions.DELETE().WHERE(whereCondition).Exec(db); err != nil {
 		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Delete abstraction %v by %v failed | reason: %v", n.AbstractionID, n.CurrentUser.DirectoryID, err))
 		return -1, lib.NewError(http.StatusInternalServerError, "Could not delete abstraction")
 	} else {
@@ -580,7 +583,7 @@ func (n *abstractions) updateAbstraction() error {
 	}
 	defer db.Close()
 
-	updateQuery := table.Abstractions.
+	if err := table.Abstractions.
 		UPDATE(columnsToUpdate).
 		MODEL(n.AbstractionUpdate.Abstraction).
 		WHERE(
@@ -588,9 +591,7 @@ func (n *abstractions) updateAbstraction() error {
 				AND(table.Abstractions.ProjectID.EQ(jet.UUID(n.ProjectID))).
 				AND(table.Abstractions.DirectoryID.EQ(jet.UUID(n.CurrentUser.DirectoryID))),
 		).
-		RETURNING(table.Abstractions.ID, table.Abstractions.LastUpdatedOn)
-
-	if err := updateQuery.Query(db, &n.AbstractionUpdate.Abstraction); err != nil {
+		RETURNING(table.Abstractions.ID, table.Abstractions.LastUpdatedOn).Query(db, &n.AbstractionUpdate.Abstraction); err != nil {
 		intpkglib.Log(intpkglib.LOG_ERROR, currentSection, fmt.Sprintf("Update abstraction %v by %v failed | reason: %v", n.AbstractionID, n.CurrentUser.DirectoryID, err))
 		return lib.NewError(http.StatusInternalServerError, "Could not update abstraction")
 	}

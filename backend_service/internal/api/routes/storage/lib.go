@@ -102,12 +102,14 @@ func (n *storage) deleteFile() error {
 			return fmt.Errorf("get storage properties failed | reason: %v", err)
 		}
 		if err := os.Remove(fmt.Sprintf("%v/%v/%v", storageProperties.Path, n.File.ProjectID, n.File.ID.String())); err != nil {
+			if e, ok := err.(*os.PathError); ok && e.Err.Error() == lib.NO_SUCH_FILE_OR_DIRECTORY_ERROR {
+				return nil
+			}
 			return fmt.Errorf("could not delete file | reason: %v", err)
 		}
 	default:
 		return fmt.Errorf("storage %v is invalid/unsupported", n.ProjectStorage.Storage.StorageTypeID)
 	}
-
 	return nil
 }
 
