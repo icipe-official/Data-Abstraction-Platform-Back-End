@@ -233,35 +233,38 @@ func (n *abstractions) genFileFromAbstractions() error {
 			}
 			maps.Copy(newAbstraction, abstraction)
 			for _, row := range lib.ConvertMapIntoTwoDimensionArray([][]any{{}}, n.FileFromData.ModelTemplate, newAbstraction, []int{}) {
-				switch n.FileFromData.FileType {
-				case lib.GEN_FILE_CSV:
-					newRow := []string{}
-					for _, rd := range row {
-						if rd != nil {
-							newRow = append(newRow, fmt.Sprintf("%v", rd))
-						} else {
-							newRow = append(newRow, "")
+				for _, rowData := range row {
+					if rowData != nil {
+						switch n.FileFromData.FileType {
+						case lib.GEN_FILE_CSV:
+							newRow := []string{}
+							for _, rd := range row {
+								if rd != nil {
+									newRow = append(newRow, fmt.Sprintf("%v", rd))
+								} else {
+									newRow = append(newRow, "")
+								}
+							}
+							n.FileFromData.CsvWriter.Write(newRow)
+						case lib.GEN_FILE_EXCEL:
+							n.FileFromData.CurrentRow += 1
+							if err := n.FileFromData.ExcelStreamWriter.SetRow(fmt.Sprintf("A%v", n.FileFromData.CurrentRow), row); err != nil {
+								return fmt.Errorf("set column headers in excel sheet of new workbook failed | reason: %v", err)
+							}
 						}
-					}
-					n.FileFromData.CsvWriter.Write(newRow)
-				case lib.GEN_FILE_EXCEL:
-					n.FileFromData.CurrentRow += 1
-					if err := n.FileFromData.ExcelStreamWriter.SetRow(fmt.Sprintf("A%v", n.FileFromData.CurrentRow), row); err != nil {
-						return fmt.Errorf("set column headers in excel sheet of new workbook failed | reason: %v", err)
+						break
 					}
 				}
 			}
 		}
-		switch n.FileFromData.FileType {
-		case lib.GEN_FILE_CSV:
+		if n.FileFromData.FileType == lib.GEN_FILE_CSV {
 			n.FileFromData.CsvWriter.Flush()
-		case lib.GEN_FILE_EXCEL:
-			if err := n.FileFromData.ExcelStreamWriter.Flush(); err != nil {
-				return fmt.Errorf("save excel buffer content failed | reason: %v", err)
-			}
 		}
 		if len(n.RetrieveAbstractions) < 1000 {
 			if n.FileFromData.FileType == lib.GEN_FILE_EXCEL {
+				if err := n.FileFromData.ExcelStreamWriter.Flush(); err != nil {
+					return fmt.Errorf("save excel buffer content failed | reason: %v", err)
+				}
 				n.FileFromData.FileContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 				n.FileFromData.FilePath = fmt.Sprintf("%v/%v_%v.xlsx", lib.TMP_DIR, time.Now().UTC(), uuid.New())
 				if err := n.FileFromData.ExcelWorkbook.SaveAs(n.FileFromData.FilePath); err != nil {

@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -132,6 +133,7 @@ func mergeTwoDimensionArrays(leftArray, rightArray [][]any) [][]any {
 	}
 	return newArray
 }
+
 func ConvertMapIntoTwoDimensionArray(twoDimensionArray [][]any, currentTemplateSection, value map[string]interface{}, repetitiveIndexes []int) [][]any {
 	columns := currentTemplateSection["columns"]
 	if fmt.Sprintf("%T", columns) == "[]interface {}" {
@@ -157,7 +159,7 @@ func ConvertMapIntoTwoDimensionArray(twoDimensionArray [][]any, currentTemplateS
 										fmt.Sprintf("%T", currentTemplateSectionValue.(map[string]interface{})[strings.Replace(c.(string), "@", "", 1)].(map[string]interface{})["value"]) == "[]interface {}" {
 										maxNoOfResultsExtract := regexp.MustCompile(`max=(.+?)&#`).FindStringSubmatch(currentTemplateSectionValue.(map[string]interface{})[strings.Replace(c.(string), "@", "", 1)].(map[string]interface{})["struct"].(string))
 										if len(maxNoOfResultsExtract) == 2 {
-											if max, err := strconv.Atoi(maxNoOfResultsExtract[1]); err == nil {
+											if max, err := strconv.Atoi(maxNoOfResultsExtract[1]); err == nil && max > 0 {
 												newSingleDimensionArray := []any{}
 												if fmt.Sprintf("%T", groupValue) == "[]interface {}" {
 													for i := 0; i < max; i++ {
@@ -188,8 +190,16 @@ func ConvertMapIntoTwoDimensionArray(twoDimensionArray [][]any, currentTemplateS
 											} else {
 												if fmt.Sprintf("%T", groupValue) == "[]interface {}" {
 													newDimensionArray := [][]any{}
-													for i := 0; i < len(groupValue.([]interface{})); i++ {
-														newDimensionArray = append(newDimensionArray, ConvertMapIntoTwoDimensionArray(twoDimensionArray, group.(map[string]interface{}), value, append(repetitiveIndexes, i))...)
+													for i := range groupValue.([]interface{}) {
+														leftDimensionArray := make([][]any, len(newDimensionArray))
+														for i, v := range newDimensionArray {
+															leftDimensionArray[i] = make([]any, len(v))
+															copy(leftDimensionArray[i], v)
+														}
+														newDimensionArray = slices.Concat(leftDimensionArray, ConvertMapIntoTwoDimensionArray(twoDimensionArray, group.(map[string]interface{}), value, append(repetitiveIndexes, i)))
+														if strings.Contains(keyPathInValue, "ir_bioassay") {
+															fmt.Printf("%v -> %v -> Right Dimension: %v\n", append(repetitiveIndexes, i), len(newDimensionArray), newDimensionArray)
+														}
 													}
 													twoDimensionArray = newDimensionArray
 												} else {
@@ -199,8 +209,16 @@ func ConvertMapIntoTwoDimensionArray(twoDimensionArray [][]any, currentTemplateS
 										} else {
 											if fmt.Sprintf("%T", groupValue) == "[]interface {}" {
 												newDimensionArray := [][]any{}
-												for i := 0; i < len(groupValue.([]interface{})); i++ {
-													newDimensionArray = append(newDimensionArray, ConvertMapIntoTwoDimensionArray(twoDimensionArray, group.(map[string]interface{}), value, append(repetitiveIndexes, i))...)
+												for i := range groupValue.([]interface{}) {
+													leftDimensionArray := make([][]any, len(newDimensionArray))
+													for i, v := range newDimensionArray {
+														leftDimensionArray[i] = make([]any, len(v))
+														copy(leftDimensionArray[i], v)
+													}
+													newDimensionArray = slices.Concat(leftDimensionArray, ConvertMapIntoTwoDimensionArray(twoDimensionArray, group.(map[string]interface{}), value, append(repetitiveIndexes, i)))
+													if strings.Contains(keyPathInValue, "ir_bioassay") {
+														fmt.Printf("%v -> %v -> Right Dimension: %v\n", append(repetitiveIndexes, i), len(newDimensionArray), newDimensionArray)
+													}
 												}
 												twoDimensionArray = newDimensionArray
 											} else {
@@ -210,8 +228,16 @@ func ConvertMapIntoTwoDimensionArray(twoDimensionArray [][]any, currentTemplateS
 									} else {
 										if fmt.Sprintf("%T", groupValue) == "[]interface {}" {
 											newDimensionArray := [][]any{}
-											for i := 0; i < len(groupValue.([]interface{})); i++ {
-												newDimensionArray = append(newDimensionArray, ConvertMapIntoTwoDimensionArray(twoDimensionArray, group.(map[string]interface{}), value, append(repetitiveIndexes, i))...)
+											for i := range groupValue.([]interface{}) {
+												leftDimensionArray := make([][]any, len(newDimensionArray))
+												for i, v := range newDimensionArray {
+													leftDimensionArray[i] = make([]any, len(v))
+													copy(leftDimensionArray[i], v)
+												}
+												newDimensionArray = slices.Concat(leftDimensionArray, ConvertMapIntoTwoDimensionArray(twoDimensionArray, group.(map[string]interface{}), value, append(repetitiveIndexes, i)))
+												if strings.Contains(keyPathInValue, "ir_bioassay") {
+													fmt.Printf("%v -> %v -> Right Dimension: %v\n", append(repetitiveIndexes, i), len(newDimensionArray), newDimensionArray)
+												}
 											}
 											twoDimensionArray = newDimensionArray
 										} else {
