@@ -197,9 +197,9 @@ func ConvertMapIntoTwoDimensionArray(twoDimensionArray [][]any, currentTemplateS
 															copy(leftDimensionArray[i], v)
 														}
 														newDimensionArray = slices.Concat(leftDimensionArray, ConvertMapIntoTwoDimensionArray(twoDimensionArray, group.(map[string]interface{}), value, append(repetitiveIndexes, i)))
-														if strings.Contains(keyPathInValue, "ir_bioassay") {
-															fmt.Printf("%v -> %v -> Right Dimension: %v\n", append(repetitiveIndexes, i), len(newDimensionArray), newDimensionArray)
-														}
+														// if strings.Contains(keyPathInValue, "ir_bioassay") {
+														// 	fmt.Printf("%v -> %v -> Right Dimension: %v\n", append(repetitiveIndexes, i), len(newDimensionArray), newDimensionArray)
+														// }
 													}
 													twoDimensionArray = newDimensionArray
 												} else {
@@ -216,9 +216,9 @@ func ConvertMapIntoTwoDimensionArray(twoDimensionArray [][]any, currentTemplateS
 														copy(leftDimensionArray[i], v)
 													}
 													newDimensionArray = slices.Concat(leftDimensionArray, ConvertMapIntoTwoDimensionArray(twoDimensionArray, group.(map[string]interface{}), value, append(repetitiveIndexes, i)))
-													if strings.Contains(keyPathInValue, "ir_bioassay") {
-														fmt.Printf("%v -> %v -> Right Dimension: %v\n", append(repetitiveIndexes, i), len(newDimensionArray), newDimensionArray)
-													}
+													// if strings.Contains(keyPathInValue, "ir_bioassay") {
+													// 	fmt.Printf("%v -> %v -> Right Dimension: %v\n", append(repetitiveIndexes, i), len(newDimensionArray), newDimensionArray)
+													// }
 												}
 												twoDimensionArray = newDimensionArray
 											} else {
@@ -235,9 +235,9 @@ func ConvertMapIntoTwoDimensionArray(twoDimensionArray [][]any, currentTemplateS
 													copy(leftDimensionArray[i], v)
 												}
 												newDimensionArray = slices.Concat(leftDimensionArray, ConvertMapIntoTwoDimensionArray(twoDimensionArray, group.(map[string]interface{}), value, append(repetitiveIndexes, i)))
-												if strings.Contains(keyPathInValue, "ir_bioassay") {
-													fmt.Printf("%v -> %v -> Right Dimension: %v\n", append(repetitiveIndexes, i), len(newDimensionArray), newDimensionArray)
-												}
+												// if strings.Contains(keyPathInValue, "ir_bioassay") {
+												// 	fmt.Printf("%v -> %v -> Right Dimension: %v\n", append(repetitiveIndexes, i), len(newDimensionArray), newDimensionArray)
+												// }
 											}
 											twoDimensionArray = newDimensionArray
 										} else {
