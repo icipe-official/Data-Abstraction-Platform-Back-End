@@ -1,0 +1,45 @@
+FROM golang:1.23 AS build
+
+WORKDIR /home/app
+
+COPY . .
+
+RUN go mod tidy
+
+RUN scripts/build/web_service_in_build_container.sh
+
+FROM debian:bookworm-slim
+
+ENV WEB_SERVICE_PORT=5174
+
+WORKDIR /home/app
+
+RUN apt-get update
+RUN apt-get install ca-certificates -y
+RUN update-ca-certificates
+
+COPY --from=build /bin/cmd_app_create_super_user bin/
+COPY --from=build /bin/cmd_app_init_database bin/
+COPY --from=build /bin/web_service bin/
+COPY --from=build /bin/migrate bin/
+
+COPY --from=build /scripts/golang_migrate/up.sh scripts/golang_migrate/
+COPY --from=build /scripts/run/cmd_app_init_database.sh scripts/
+COPY --from=build /scripts/run/web_service.sh scripts/
+COPY --from=build /database/psql_migrations scripts/psql_migrations
+
+ENV PSQL_DATABASE_MIGRATION_SCRIPTS_DIRECTORY="/home/app/scripts/psql_migrations"
+
+RUN chmod +x bin/cmd_app_create_super_user
+RUN chmod +x bin/cmd_app_init_database
+RUN chmod +x bin/migrate
+RUN chmod +x bin/web_service
+
+RUN chmod +x scripts/golang_migrate/up.sh
+RUN chmod +x scripts/cmd_app_init_database.sh
+RUN chmod +x scripts/web_service.sh
+
+EXPOSE ${WEB_SERVICE_PORT}
+
+CMD ["scripts/web_service.sh"]
+

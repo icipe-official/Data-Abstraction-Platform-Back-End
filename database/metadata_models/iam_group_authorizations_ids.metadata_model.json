@@ -1,0 +1,47 @@
+{
+    "$FIELD_GROUP_KEY": "$",
+    "$FIELD_GROUP_NAME": "Iam Group Authorization IDs",
+    "$FIELD_GROUP_DESCRIPTION": "authorization ids that were used to create and/or deactivate the resources",
+    "$FIELD_GROUP_MAX_ENTRIES": 1,
+    "$DATABASE_TABLE_COLLECTION_NAME": "iam_group_authorizations_ids",
+    "$DATABASE_TABLE_COLLECTION_UID": "iam_group_authorizations_ids",
+    "$GROUP_FIELDS": [
+        {
+            "id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].id",
+                "$FIELD_GROUP_NAME": "id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$FIELD_GROUP_IS_PRIMARY_KEY": true,
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$DATABASE_FIELD_COLUMN_NAME": "id",
+                "$DATABASE_TABLE_COLLECTION_UID": "iam_group_authorizations_ids"
+            },
+            "creation_iam_group_authorizations_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].creation_iam_group_authorizations_id",
+                "$FIELD_GROUP_NAME": "creation iam group authorizations id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$DATABASE_FIELD_COLUMN_NAME": "creation_iam_group_authorizations_id",
+                "$DATABASE_TABLE_COLLECTION_UID": "iam_group_authorizations_ids"
+            },
+            "deactivation_iam_group_authorizations_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].deactivation_iam_group_authorizations_id",
+                "$FIELD_GROUP_NAME": "deactivation iam group authorizations id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "datetime",
+                "$DATABASE_TABLE_COLLECTION_UID": "iam_group_authorizations_ids",
+                "$DATABASE_FIELD_COLUMN_NAME": "deactivation_iam_group_authorizations_id",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            }
+        }
+    ],
+    "$GROUP_READ_ORDER_OF_FIELDS": [
+        "id",
+        "creation_iam_group_authorizations_id",
+        "deactivation_iam_group_authorizations_id"
+    ]
+}

@@ -1,0 +1,7 @@
+*.sh
+!run.sh
+!init*.sh
+!app*.sh
+*.json
+!sample*.json
+*.curl

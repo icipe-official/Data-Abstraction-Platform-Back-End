@@ -1,0 +1,48 @@
+{
+    "$FIELD_GROUP_KEY": "$",
+    "$FIELD_GROUP_NAME": "Metadata Models Defaults",
+    "$FIELD_GROUP_DESCRIPTION": "default metadata_models used in specific tables such as directory and groups",
+    "$FIELD_GROUP_MAX_ENTRIES": 1,
+    "$GROUP_FIELDS": [
+        {
+            "id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].id",
+                "$FIELD_GROUP_NAME": "id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$FIELD_GROUP_IS_PRIMARY_KEY": true,
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models_defaults",
+                "$DATABASE_FIELD_COLUMN_NAME": "id",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "description": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].description",
+                "$FIELD_GROUP_NAME": "description",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "textarea",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models_defaults",
+                "$DATABASE_FIELD_COLUMN_NAME": "description",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "metadata_models_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].metadata_models_id",
+                "$FIELD_GROUP_NAME": "metadata_models_id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models_defaults",
+                "$DATABASE_FIELD_COLUMN_NAME": "metadata_models_id",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            }
+        }
+    ],
+    "$GROUP_READ_ORDER_OF_FIELDS": [
+        "id",
+        "description",
+        "metadata_models_id"
+    ],
+    "$DATABASE_TABLE_COLLECTION_UID": "metadata_models_defaults",
+    "$DATABASE_TABLE_COLLECTION_NAME": "metadata_models_defaults"
+}

@@ -1,0 +1,84 @@
+{
+    "$FIELD_GROUP_KEY": "$",
+    "$FIELD_GROUP_NAME": "Storage Drives Groups",
+    "$FIELD_GROUP_DESCRIPTION": "Storage drives available in specific directory_groups.",
+    "$FIELD_GROUP_MAX_ENTRIES": 1,
+    "$GROUP_FIELDS": [
+        {
+            "storage_drives_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].storage_drives_id",
+                "$FIELD_GROUP_NAME": "storage drives id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$DATABASE_FIELD_COLUMN_NAME": "storage_drives_id",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives_groups",
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$FIELD_GROUP_IS_PRIMARY_KEY": true
+            },
+            "directory_groups_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].directory_groups_id",
+                "$FIELD_GROUP_NAME": "directory groups id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$DATABASE_FIELD_COLUMN_NAME": "directory_groups_id",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives_groups",
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$FIELD_GROUP_IS_PRIMARY_KEY": true
+            },
+            "description": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].description",
+                "$FIELD_GROUP_NAME": "description",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "textarea",
+                "$DATABASE_FIELD_COLUMN_NAME": "description",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives_groups"
+            },
+            "created_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].created_on",
+                "$FIELD_GROUP_NAME": "created on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm",
+                "$DATABASE_FIELD_COLUMN_NAME": "created_on",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives_groups",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "last_updated_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].last_updated_on",
+                "$FIELD_GROUP_NAME": "last updated on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm",
+                "$DATABASE_FIELD_COLUMN_NAME": "last_updated_on",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives_groups",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "deactivated_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].deactivated_on",
+                "$FIELD_GROUP_NAME": "deactivated on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm",
+                "$DATABASE_FIELD_COLUMN_NAME": "deactivated_on",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives_groups",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            }
+        }
+    ],
+    "$GROUP_READ_ORDER_OF_FIELDS": [
+        "storage_drives_id",
+        "directory_groups_id",
+        "description",
+        "created_on",
+        "last_updated_on",
+        "deactivated_on"
+    ],
+    "$DATABASE_TABLE_COLLECTION_NAME": "storage_drives_groups",
+    "$DATABASE_TABLE_COLLECTION_UID": "storage_drives_groups"
+}

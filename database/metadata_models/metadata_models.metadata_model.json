@@ -1,0 +1,183 @@
+{
+    "$FIELD_GROUP_KEY": "$",
+    "$FIELD_GROUP_NAME": "Metadata Models",
+    "$FIELD_GROUP_DESCRIPTION": "Metadata-Models for different purposes such as dynamic description of inventory items, directory user information etc.",
+    "$FIELD_GROUP_MAX_ENTRIES": 1,
+    "$GROUP_FIELDS": [
+        {
+            "id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].id",
+                "$FIELD_GROUP_NAME": "id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$FIELD_GROUP_IS_PRIMARY_KEY": true,
+                "$DATABASE_FIELD_COLUMN_NAME": "id",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "directory_groups_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].directory_groups_id",
+                "$FIELD_GROUP_NAME": "directory groups id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$DATABASE_FIELD_COLUMN_NAME": "directory_groups_id",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "directory_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].directory_id",
+                "$FIELD_GROUP_NAME": "directory id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models",
+                "$DATABASE_FIELD_COLUMN_NAME": "directory_id",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "name": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].name",
+                "$FIELD_GROUP_NAME": "name",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$DATABASE_FIELD_ADD_DATA_TO_FULL_TEXT_SEARCH_INDEX": true,
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models",
+                "$DATABASE_FIELD_COLUMN_NAME": "name"
+            },
+            "description": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].description",
+                "$FIELD_GROUP_NAME": "description",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "textarea",
+                "$DATABASE_FIELD_ADD_DATA_TO_FULL_TEXT_SEARCH_INDEX": true,
+                "$DATABASE_FIELD_COLUMN_NAME": "description",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models"
+            },
+            "edit_unauthorized": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].edit_unauthorized",
+                "$FIELD_GROUP_NAME": "edit unauthorized",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "boolean",
+                "$FIELD_UI": "checkbox",
+                "$DATABASE_FIELD_COLUMN_NAME": "edit_unauthorized",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models"
+            },
+            "edit_authorized": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].edit_authorized",
+                "$FIELD_GROUP_NAME": "edit authorized",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "boolean",
+                "$FIELD_UI": "checkbox",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models",
+                "$DATABASE_FIELD_COLUMN_NAME": "edit_authorized"
+            },
+            "view_authorized": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].view_authorized",
+                "$FIELD_GROUP_NAME": "view authorized",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "boolean",
+                "$FIELD_UI": "checkbox",
+                "$DATABASE_FIELD_COLUMN_NAME": "view_authorized",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models"
+            },
+            "view_unauthorized": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].view_unauthorized",
+                "$FIELD_GROUP_NAME": "view unauthorized",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "boolean",
+                "$FIELD_UI": "checkbox",
+                "$DATABASE_FIELD_COLUMN_NAME": "view_unauthorized",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models"
+            },
+            "tags": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].tags",
+                "$FIELD_GROUP_NAME": "tags",
+                "$FIELD_GROUP_MAX_ENTRIES": 0,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$DATABASE_FIELD_ADD_DATA_TO_FULL_TEXT_SEARCH_INDEX": true,
+                "$DATABASE_FIELD_COLUMN_NAME": "tags",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models"
+            },
+            "data": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].data",
+                "$FIELD_GROUP_NAME": "metadata model",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "any",
+                "$FIELD_UI": "",
+                "$DATABASE_FIELD_COLUMN_NAME": "data",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models",
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$FIELD_GROUP_VIEW_DISABLE": true
+            },
+            "created_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].created_on",
+                "$FIELD_GROUP_NAME": "created on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models",
+                "$DATABASE_FIELD_COLUMN_NAME": "created_on",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "last_updated_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].last_updated_on",
+                "$FIELD_GROUP_NAME": "last updated on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models",
+                "$DATABASE_FIELD_COLUMN_NAME": "last_updated_on",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "deactivated_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].deactivated_on",
+                "$FIELD_GROUP_NAME": "deactivated on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models",
+                "$DATABASE_FIELD_COLUMN_NAME": "deactivated_on",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "full_text_search": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].full_text_search",
+                "$FIELD_GROUP_NAME": "full_text_search",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "",
+                "$FIELD_UI": "",
+                "$DATABASE_FIELD_COLUMN_NAME": "full_text_search",
+                "$DATABASE_TABLE_COLLECTION_UID": "metadata_models",
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$FIELD_GROUP_VIEW_DISABLE": true,
+                "$FIELD_GROUP_QUERY_CONDITIONS_EDIT_DISABLE": true
+            }
+        }
+    ],
+    "$GROUP_READ_ORDER_OF_FIELDS": [
+        "id",
+        "directory_groups_id",
+        "directory_id",
+        "name",
+        "description",
+        "edit_authorized",
+        "edit_unauthorized",
+        "view_authorized",
+        "view_unauthorized",
+        "tags",
+        "data",
+        "created_on",
+        "last_updated_on",
+        "deactivated_on",
+        "full_text_search"
+    ],
+    "$DATABASE_TABLE_COLLECTION_UID": "metadata_models",
+    "$DATABASE_TABLE_COLLECTION_NAME": "metadata_models",
+    "$GROUP_QUERY_ADD_FULL_TEXT_SEARCH_BOX": true
+}

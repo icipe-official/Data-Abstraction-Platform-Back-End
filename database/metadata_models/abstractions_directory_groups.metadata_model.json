@@ -1,0 +1,114 @@
+{
+    "$FIELD_GROUP_KEY": "$",
+    "$FIELD_GROUP_NAME": "Abstractions Directory Groups",
+    "$FIELD_GROUP_DESCRIPTION": "setup abstractions properties for group",
+    "$FIELD_GROUP_MAX_ENTRIES": 1,
+    "$GROUP_FIELDS": [
+        {
+            "directory_groups_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].directory_groups_id",
+                "$FIELD_GROUP_NAME": "directory groups id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$DATABASE_TABLE_COLLECTION_UID": "abstractions_directory_groups",
+                "$DATABASE_FIELD_COLUMN_NAME": "directory_groups_id",
+                "$FIELD_GROUP_IS_PRIMARY_KEY": true,
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "metadata_models_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].metadata_models_id",
+                "$FIELD_GROUP_NAME": "metadata models id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$FIELD_GROUP_IS_PRIMARY_KEY": true,
+                "$DATABASE_FIELD_COLUMN_NAME": "metadata_models_id",
+                "$DATABASE_TABLE_COLLECTION_UID": "abstractions_directory_groups",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "description": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].description",
+                "$FIELD_GROUP_NAME": "description",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "textarea",
+                "$DATABASE_TABLE_COLLECTION_UID": "abstractions_directory_groups",
+                "$DATABASE_FIELD_COLUMN_NAME": "description"
+            },
+            "abstraction_review_quorum": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].abstraction_review_quorum",
+                "$FIELD_GROUP_NAME": "abstraction review quorum",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "number",
+                "$FIELD_UI": "number",
+                "$DATABASE_FIELD_COLUMN_NAME": "abstraction_review_quorum",
+                "$DATABASE_TABLE_COLLECTION_UID": "abstractions_directory_groups"
+            },
+            "view_authorized": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].view_authorized",
+                "$FIELD_GROUP_NAME": "view authorized",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "boolean",
+                "$FIELD_UI": "checkbox",
+                "$DATABASE_FIELD_COLUMN_NAME": "view_authorized",
+                "$DATABASE_TABLE_COLLECTION_UID": "abstractions_directory_groups"
+            },
+            "view_unauthorized": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].view_unauthorized",
+                "$FIELD_GROUP_NAME": "view unauthorized",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "boolean",
+                "$FIELD_UI": "checkbox",
+                "$DATABASE_FIELD_COLUMN_NAME": "view_unauthorized",
+                "$DATABASE_TABLE_COLLECTION_UID": "abstractions_directory_groups"
+            },
+            "created_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].created_on",
+                "$FIELD_GROUP_NAME": "created on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$DATABASE_TABLE_COLLECTION_UID": "abstractions_directory_groups",
+                "$DATABASE_FIELD_COLUMN_NAME": "created_on",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm"
+            },
+            "last_updated_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].last_updated_on",
+                "$FIELD_GROUP_NAME": "last updated on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$DATABASE_FIELD_COLUMN_NAME": "last_updated_on",
+                "$DATABASE_TABLE_COLLECTION_UID": "abstractions_directory_groups",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm"
+            },
+            "deactivated_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].deactivated_on",
+                "$FIELD_GROUP_NAME": "deactivated on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm",
+                "$DATABASE_TABLE_COLLECTION_UID": "abstractions_directory_groups",
+                "$DATABASE_FIELD_COLUMN_NAME": "deactivated_on",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            }
+        }
+    ],
+    "$GROUP_READ_ORDER_OF_FIELDS": [
+        "directory_groups_id",
+        "metadata_models_id",
+        "description",
+        "abstraction_review_quorum",
+        "view_authorized",
+        "view_unauthorized",
+        "created_on",
+        "last_updated_on",
+        "deactivated_on"
+    ],
+    "$DATABASE_TABLE_COLLECTION_UID": "abstractions_directory_groups",
+    "$DATABASE_TABLE_COLLECTION_NAME": "abstractions_directory_groups"
+}

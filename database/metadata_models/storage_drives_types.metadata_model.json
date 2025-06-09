@@ -1,0 +1,35 @@
+{
+    "$FIELD_GROUP_KEY": "$",
+    "$FIELD_GROUP_NAME": "Storage Drives Types",
+    "$FIELD_GROUP_DESCRIPTION": "Types of storage drives supported by the application.",
+    "$FIELD_GROUP_MAX_ENTRIES": 1,
+    "$GROUP_FIELDS": [
+        {
+            "id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].id",
+                "$FIELD_GROUP_NAME": "id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$FIELD_GROUP_IS_PRIMARY_KEY": true,
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives_types",
+                "$DATABASE_FIELD_COLUMN_NAME": "id"
+            },
+            "description": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].description",
+                "$FIELD_GROUP_NAME": "description",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "textarea",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives_types",
+                "$DATABASE_FIELD_COLUMN_NAME": "description"
+            }
+        }
+    ],
+    "$GROUP_READ_ORDER_OF_FIELDS": [
+        "id",
+        "description"
+    ],
+    "$DATABASE_TABLE_COLLECTION_UID": "storage_drives_types",
+    "$DATABASE_TABLE_COLLECTION_NAME": "storage_drives_types"
+}

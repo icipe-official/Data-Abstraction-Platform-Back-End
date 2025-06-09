@@ -1,0 +1,197 @@
+[
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "create"
+                ],
+                "rule_group": [
+                    "iam_group_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "create new iam_group_authorizations even if role was not assigned to user previously."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_create"
+                ],
+                "rule_group": [
+                    "iam_group_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'create' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "retrieve_self"
+                ],
+                "rule_group": [
+                    "iam_group_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow users to retrieve their own iam_group_authorizations information."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_retrieve_self"
+                ],
+                "rule_group": [
+                    "iam_group_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'retrieve_self' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "retrieve"
+                ],
+                "rule_group": [
+                    "iam_group_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "retrieve authorization rules for users in current directory-group."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_retrieve"
+                ],
+                "rule_group": [
+                    "iam_group_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other user to assign rule 'retrieve' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "retrieve_others"
+                ],
+                "rule_group": [
+                    "iam_group_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "retrieve authorization rules for users in current directory-group sub-groups."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_retrieve_others"
+                ],
+                "rule_group": [
+                    "iam_group_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other user to assign rule 'retrieve_others' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "delete"
+                ],
+                "rule_group": [
+                    "iam_group_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "delete/deactivate authorization rule assigned to users in current directory-group."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_delete"
+                ],
+                "rule_group": [
+                    "iam_group_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'delete' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "delete_others"
+                ],
+                "rule_group": [
+                    "iam_group_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "delete/deactivate authorization rule assigned to users in current directory-group sub-groups."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_delete_others"
+                ],
+                "rule_group": [
+                    "iam_group_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'delete_others' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_all"
+                ],
+                "rule_group": [
+                    "iam_group_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign other rules to other users."
+        ]
+    }
+]

@@ -1,0 +1,96 @@
+{
+    "$FIELD_GROUP_KEY": "$",
+    "$FIELD_GROUP_NAME": "Storage Drives",
+    "$FIELD_GROUP_DESCRIPTION": "Storage drives available for use in directory_groups.",
+    "$FIELD_GROUP_MAX_ENTRIES": 1,
+    "$GROUP_FIELDS": [
+        {
+            "id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].id",
+                "$FIELD_GROUP_NAME": "id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$DATABASE_FIELD_COLUMN_NAME": "id",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives",
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$FIELD_GROUP_IS_PRIMARY_KEY": true
+            },
+            "storage_drives_types_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].storage_drives_types_id",
+                "$FIELD_GROUP_NAME": "storage drive types id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives",
+                "$DATABASE_FIELD_COLUMN_NAME": "storage_drives_types_id"
+            },
+            "description": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].description",
+                "$FIELD_GROUP_NAME": "description",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "textarea",
+                "$DATABASE_FIELD_COLUMN_NAME": "description",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives"
+            },
+            "data": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].data",
+                "$FIELD_GROUP_NAME": "data",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "any",
+                "$FIELD_UI": "",
+                "$DATABASE_FIELD_COLUMN_NAME": "data",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives",
+                "$FIELD_TYPE_ANY": {
+                    "$METADATA_MODEL_ACTION_ID": "storage_drives_types",
+                    "$GET_METADATA_MODEL_PATH_TO_DATA_ARGUMENT": "$.storage_drives_types_id"
+                }
+            },
+            "created_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].created_on",
+                "$FIELD_GROUP_NAME": "created on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives",
+                "$DATABASE_FIELD_COLUMN_NAME": "created_on",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "last_updated_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].last_updated_on",
+                "$FIELD_GROUP_NAME": "last updated on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives",
+                "$DATABASE_FIELD_COLUMN_NAME": "last_updated_on",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "deactivated_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].deactivated_on",
+                "$FIELD_GROUP_NAME": "deactivated on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm",
+                "$DATABASE_FIELD_COLUMN_NAME": "deactivated_on",
+                "$DATABASE_TABLE_COLLECTION_UID": "storage_drives",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            }
+        }
+    ],
+    "$GROUP_READ_ORDER_OF_FIELDS": [
+        "id",
+        "storage_drives_types_id",
+        "description",
+        "data",
+        "created_on",
+        "last_updated_on",
+        "deactivated_on"
+    ],
+    "$DATABASE_TABLE_COLLECTION_UID": "storage_drives",
+    "$DATABASE_TABLE_COLLECTION_NAME": "storage_drives"
+}

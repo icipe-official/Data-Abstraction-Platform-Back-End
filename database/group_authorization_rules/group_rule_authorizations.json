@@ -1,0 +1,227 @@
+[
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "create"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "add new rules for current directory-group. This includes rules that did not exist in current group therefeore consider this a privileged rule."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_create"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'create' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "create_others"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "add rules for current directory-group sub-groups. Sub-group must be child of directory-group and rule must exist in parent directory-group. Rule must exist in parent directory-group."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_create_others"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'create_others' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "retrieve"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "retrieve rules for current directory-group."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_retrieve"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'retrieve' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "retrieve_others"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "retrieve rules for current directory-group sub-groups."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_retrieve_others"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'retrieve_others' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "update"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "update group authorization rules tags."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_update"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'update' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "delete"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "delete/deactivate rules for current directory-group"
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_delete"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'delete_self' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "delete_others"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "delete/deactivate rules for directory-group sub-groups. Sub-group must be child of parent directory-group."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_delete_others"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'delete_others' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_all"
+                ],
+                "rule_group": [
+                    "group_rule_authorizations"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign all rules to other users."
+        ]
+    }
+]

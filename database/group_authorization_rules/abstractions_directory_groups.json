@@ -1,0 +1,197 @@
+[
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "create"
+                ],
+                "rule_group": [
+                    "abstractions_directory_groups"
+                ]
+            }
+        ],
+        "description": [
+            "create new abstractions_directory_groups-groups."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_create"
+                ],
+                "rule_group": [
+                    "abstractions_directory_groups"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'create' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "retrieve"
+                ],
+                "rule_group": [
+                    "abstractions_directory_groups"
+                ]
+            }
+        ],
+        "description": [
+            "retrieve current abstractions_directory_groups."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_retrieve"
+                ],
+                "rule_group": [
+                    "abstractions_directory_groups"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'retrieve' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "retrieve_others"
+                ],
+                "rule_group": [
+                    "abstractions_directory_groups"
+                ]
+            }
+        ],
+        "description": [
+            "retrieve current directory-group sub-groups abstractions_directory_groups."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_retrieve_others"
+                ],
+                "rule_group": [
+                    "abstractions_directory_groups"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'retrieve_others' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "update"
+                ],
+                "rule_group": [
+                    "abstractions_directory_groups"
+                ]
+            }
+        ],
+        "description": [
+            "allows user to update current abstractions_directory_groups."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_update"
+                ],
+                "rule_group": [
+                    "abstractions_directory_groups"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'update' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "delete"
+                ],
+                "rule_group": [
+                    "abstractions_directory_groups"
+                ]
+            }
+        ],
+        "description": [
+            "delete/deactivate abstractions_directory_groups."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_delete"
+                ],
+                "rule_group": [
+                    "abstractions_directory_groups"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'delete' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "delete_others"
+                ],
+                "rule_group": [
+                    "abstractions_directory_groups"
+                ]
+            }
+        ],
+        "description": [
+            "delete/deactivate directory-group sub-groups abstractions_directory_groups."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_delete_others"
+                ],
+                "rule_group": [
+                    "abstractions_directory_groups"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'delete' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_all"
+                ],
+                "rule_group": [
+                    "abstractions_directory_groups"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign all rules to other users."
+        ]
+    }
+]

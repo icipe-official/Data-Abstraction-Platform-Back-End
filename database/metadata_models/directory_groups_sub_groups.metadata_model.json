@@ -1,0 +1,38 @@
+{
+    "$FIELD_GROUP_KEY": "$",
+    "$FIELD_GROUP_NAME": "Directory Groups Sub Groups",
+    "$FIELD_GROUP_DESCRIPTION": "Links sub_groups to their parent_groups",
+    "$FIELD_GROUP_MAX_ENTRIES": 1,
+    "$GROUP_FIELDS": [
+        {
+            "parent_group_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].parent_group_id",
+                "$FIELD_GROUP_NAME": "parent group id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$DATABASE_TABLE_COLLECTION_UID": "directory_groups_sub_groups",
+                "$DATABASE_FIELD_COLUMN_NAME": "parent_group_id",
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$FIELD_GROUP_IS_PRIMARY_KEY": true
+            },
+            "sub_group_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].sub_group_id",
+                "$FIELD_GROUP_NAME": "sub group id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$DATABASE_TABLE_COLLECTION_UID": "directory_groups_sub_groups",
+                "$DATABASE_FIELD_COLUMN_NAME": "sub_group_id",
+                "$FIELD_GROUP_IS_PRIMARY_KEY": true
+            }
+        }
+    ],
+    "$GROUP_READ_ORDER_OF_FIELDS": [
+        "parent_group_id",
+        "sub_group_id"
+    ],
+    "$DATABASE_TABLE_COLLECTION_UID": "directory_groups_sub_groups",
+    "$DATABASE_TABLE_COLLECTION_NAME": "directory_groups_sub_groups"
+}

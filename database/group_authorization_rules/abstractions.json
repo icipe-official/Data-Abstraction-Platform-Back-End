@@ -1,0 +1,377 @@
+[
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "create"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "create new abstraction for self."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_create"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'create' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "create_others"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "create new abstraction for other abstractors."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_create_others"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'create' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "retrieve_self"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow users to retrieve their own abstractions."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_retrieve_self"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'retrieve_self' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "retrieve"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "retrieve abstractions in current directory-group."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_retrieve"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow other user to assign rule 'retrieve' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "retrieve_others"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "retrieve abstractions in current directory-group sub-groups."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_retrieve_others"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow other user to assign rule 'retrieve_others' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "update_self"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allows user to update their own abstractions."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_update_self"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'update_self' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "update"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "update abstractions in current directory-group."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_update"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'update' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "update_others"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "update other abstractions in current directory-group sub-groups."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_update_others"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'update_others' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "update_directory"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "update abstractions' directory_id (owner id) in current directory-group."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_update_directory"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'update_directory' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "delete_self"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "delete/deactivate your own abstractions."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_delete_self"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'delete_self' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "delete"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "delete/deactivate abstractions in current directory-group."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_delete"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'delete' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "delete_others"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "delete/deactivate abstractions directory-group sub-groups."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_delete_others"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'delete_others' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_all"
+                ],
+                "rule_group": [
+                    "abstractions"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign other rules to other users."
+        ]
+    }
+]

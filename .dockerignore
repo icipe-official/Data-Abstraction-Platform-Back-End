@@ -1,0 +1,12 @@
+bin
+.dockerignore
+.git
+.gitignore
+.gitattributes
+*.md
+.editorconfig
+.vscode
+build
+package
+**/temp*
+**/tmp*

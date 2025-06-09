@@ -1,0 +1,5 @@
+-- 20250508152849
+
+-- DROP EXTENSION IF EXISTS postgis;
+DROP EXTENSION IF EXISTS pgcrypto;
+DROP FUNCTION IF EXISTS update_last_updated_on();

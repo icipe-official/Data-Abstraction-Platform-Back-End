@@ -1,0 +1,72 @@
+{
+    "$FIELD_GROUP_KEY": "$",
+    "$FIELD_GROUP_NAME": "Iam Group Authorizations",
+    "$FIELD_GROUP_DESCRIPTION": "authorization rules for users in a directory_group",
+    "$FIELD_GROUP_MAX_ENTRIES": 1,
+    "$GROUP_FIELDS": [
+        {
+            "id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].id",
+                "$FIELD_GROUP_NAME": "id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$FIELD_GROUP_IS_PRIMARY_KEY": true,
+                "$DATABASE_TABLE_COLLECTION_UID": "iam_group_authorizations",
+                "$DATABASE_FIELD_COLUMN_NAME": "id",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "iam_credentials_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].iam_credentials_id",
+                "$FIELD_GROUP_NAME": "iam credentials id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$DATABASE_TABLE_COLLECTION_UID": "iam_group_authorizations",
+                "$DATABASE_FIELD_COLUMN_NAME": "iam_credentials_id",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "group_rule_authorizations_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].group_rule_authorizations_id",
+                "$FIELD_GROUP_NAME": "group rule authorizations id",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "text",
+                "$DATABASE_TABLE_COLLECTION_UID": "iam_group_authorizations",
+                "$DATABASE_FIELD_COLUMN_NAME": "group_rule_authorizations_id",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "created_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].created_on",
+                "$FIELD_GROUP_NAME": "created on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm",
+                "$DATABASE_TABLE_COLLECTION_UID": "iam_group_authorizations",
+                "$DATABASE_FIELD_COLUMN_NAME": "created_on",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            },
+            "deactivated_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].deactivated_on",
+                "$FIELD_GROUP_NAME": "deactivated on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm",
+                "$DATABASE_TABLE_COLLECTION_UID": "iam_group_authorizations",
+                "$DATABASE_FIELD_COLUMN_NAME": "deactivated_on",
+                "$FIELD_GROUP_INPUT_DISABLE": true
+            }
+        }
+    ],
+    "$GROUP_READ_ORDER_OF_FIELDS": [
+        "id",
+        "iam_credentials_id",
+        "group_rule_authorizations_id",
+        "created_on",
+        "deactivated_on"
+    ],
+    "$DATABASE_TABLE_COLLECTION_UID": "iam_group_authorizations",
+    "$DATABASE_TABLE_COLLECTION_NAME": "iam_group_authorizations"
+}

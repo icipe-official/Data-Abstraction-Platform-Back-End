@@ -1,0 +1,104 @@
+{
+    "$FIELD_GROUP_KEY": "$",
+    "$FIELD_GROUP_NAME": "Group Authorization Rules",
+    "$FIELD_GROUP_DESCRIPTION": "Authorization rules available to users in a group",
+    "$FIELD_GROUP_MAX_ENTRIES": 1,
+    "$GROUP_FIELDS": [
+        {
+            "group_authorization_rules_id": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].group_authorization_rules_id",
+                "$FIELD_GROUP_NAME": "Group Authorization Rules ID",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$GROUP_FIELDS": [
+                    {
+                        "id": {
+                            "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].group_authorization_rules_id.$GROUP_FIELDS[*].id",
+                            "$FIELD_GROUP_NAME": "id",
+                            "$FIELD_GROUP_MAX_ENTRIES": 1,
+                            "$FIELD_DATATYPE": "text",
+                            "$FIELD_UI": "text",
+                            "$DATABASE_FIELD_COLUMN_NAME": "id",
+                            "$DATABASE_TABLE_COLLECTION_UID": "group_authorization_rules",
+                            "$DATABASE_FIELD_ADD_DATA_TO_FULL_TEXT_SEARCH_INDEX": true,
+                            "$FIELD_GROUP_INPUT_DISABLE": true,
+                            "$FIELD_GROUP_IS_PRIMARY_KEY": true
+                        },
+                        "rule_group": {
+                            "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].group_authorization_rules_id.$GROUP_FIELDS[*].rule_group",
+                            "$FIELD_GROUP_NAME": "rule group",
+                            "$FIELD_GROUP_MAX_ENTRIES": 1,
+                            "$FIELD_DATATYPE": "text",
+                            "$FIELD_UI": "text",
+                            "$FIELD_GROUP_IS_PRIMARY_KEY": true,
+                            "$FIELD_GROUP_INPUT_DISABLE": true,
+                            "$DATABASE_TABLE_COLLECTION_UID": "group_authorization_rules",
+                            "$DATABASE_FIELD_COLUMN_NAME": "rule_group",
+                            "$DATABASE_FIELD_ADD_DATA_TO_FULL_TEXT_SEARCH_INDEX": true
+                        }
+                    }
+                ],
+                "$GROUP_READ_ORDER_OF_FIELDS": [
+                    "id",
+                    "rule_group"
+                ],
+                "$FIELD_GROUP_IS_PRIMARY_KEY": true,
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$DATABASE_TABLE_COLLECTION_UID": "group_authorization_rules",
+                "$DATABASE_TABLE_COLLECTION_NAME": "group_authorization_rules"
+            },
+            "description": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].description",
+                "$FIELD_GROUP_NAME": "description",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "text",
+                "$FIELD_UI": "textarea",
+                "$DATABASE_TABLE_COLLECTION_UID": "group_authorization_rules",
+                "$DATABASE_FIELD_COLUMN_NAME": "description",
+                "$DATABASE_FIELD_ADD_DATA_TO_FULL_TEXT_SEARCH_INDEX": true
+            },
+            "created_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].created_on",
+                "$FIELD_GROUP_NAME": "created on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$DATABASE_TABLE_COLLECTION_UID": "group_authorization_rules",
+                "$DATABASE_FIELD_COLUMN_NAME": "created_on",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm"
+            },
+            "last_updated_on": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].last_updated_on",
+                "$FIELD_GROUP_NAME": "last updated on",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "timestamp",
+                "$FIELD_UI": "datetime",
+                "$DATABASE_FIELD_COLUMN_NAME": "last_updated_on",
+                "$DATABASE_TABLE_COLLECTION_UID": "group_authorization_rules",
+                "$FIELD_DATETIME_FORMAT": "yyyy-mm-dd hh:mm"
+            },
+            "full_text_search": {
+                "$FIELD_GROUP_KEY": "$.$GROUP_FIELDS[*].full_text_search",
+                "$FIELD_GROUP_NAME": "full_text_search",
+                "$FIELD_GROUP_MAX_ENTRIES": 1,
+                "$FIELD_DATATYPE": "",
+                "$FIELD_UI": "",
+                "$DATABASE_FIELD_COLUMN_NAME": "full_text_search",
+                "$DATABASE_TABLE_COLLECTION_UID": "group_authorization_rules",
+                "$FIELD_GROUP_INPUT_DISABLE": true,
+                "$FIELD_GROUP_VIEW_DISABLE": true,
+                "$FIELD_GROUP_QUERY_CONDITIONS_EDIT_DISABLE": true
+            }
+        }
+    ],
+    "$GROUP_READ_ORDER_OF_FIELDS": [
+        "group_authorization_rules_id",
+        "description",
+        "created_on",
+        "last_updated_on",
+        "full_text_search"
+    ],
+    "$DATABASE_TABLE_COLLECTION_UID": "group_authorization_rules",
+    "$DATABASE_TABLE_COLLECTION_NAME": "group_authorization_rules",
+    "$GROUP_QUERY_ADD_FULL_TEXT_SEARCH_BOX": true
+}

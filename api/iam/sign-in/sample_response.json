@@ -1,0 +1,7 @@
+{
+    "openid_endpoints": {
+        "login_endpoint": "http://10.88.0.200:8080/realms/dap/protocol/openid-connect/auth?client_id=dap\u0026redirect_uri=%2Fredirect%2Flogin\u0026response_type=code\u0026scope=openid",
+        "registration_endpoint": "http://10.88.0.200:8080/realms/dap/protocol/openid-connect/registrations?scope=openid\u0026response_type=code\u0026client_id=dap\u0026redirect_uri=http://0.0.0.0:5173/redirect/login",
+        "account_management_endpoint": "http://10.88.0.200:8080/realms/dap/account/"
+    }
+}

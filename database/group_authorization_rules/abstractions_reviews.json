@@ -1,0 +1,77 @@
+[
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "create"
+                ],
+                "rule_group": [
+                    "abstractions_reviews"
+                ]
+            }
+        ],
+        "description": [
+            "create new abstraction review."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_create"
+                ],
+                "rule_group": [
+                    "abstractions_reviews"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign rule 'create' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "retrieve"
+                ],
+                "rule_group": [
+                    "abstractions_reviews"
+                ]
+            }
+        ],
+        "description": [
+            "retrieve abstractions_reviews in current directory-group."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_retrieve"
+                ],
+                "rule_group": [
+                    "abstractions_reviews"
+                ]
+            }
+        ],
+        "description": [
+            "allow other user to assign rule 'retrieve' to other users."
+        ]
+    },
+    {
+        "group_authorization_rules_id": [
+            {
+                "id": [
+                    "assign_all"
+                ],
+                "rule_group": [
+                    "abstractions_reviews"
+                ]
+            }
+        ],
+        "description": [
+            "allow other users to assign other rules to other users."
+        ]
+    }
+]
