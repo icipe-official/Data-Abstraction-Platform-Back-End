@@ -19,6 +19,161 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+func (n *PostrgresRepository) RepoAbstractionsUpdateDirectory(
+	ctx context.Context,
+	authContextDirectoryGroupID uuid.UUID,
+	data *intdoment.AbstractionsUpdateDirectory,
+	columns []string,
+) ([]*intdoment.Abstractions, error) {
+	if data.NewDirectoryID == nil || data.NewDirectoryID.String() == uuid.Nil.String() {
+		return nil, errors.New("NewDirectoryID empty")
+	}
+
+	abstractionsMetadataModel, err := intlib.MetadataModelGet(intdoment.AbstractionsRepository().RepositoryName)
+	if err != nil {
+		return nil, intlib.FunctionNameAndError(n.RepoAbstractionsFindActiveOneByIDAndAbstractionsDirectoryGroups, err)
+	}
+
+	if len(columns) == 0 {
+		if dbColumnFields, err := intlibmmodel.DatabaseGetColumnFields(abstractionsMetadataModel, intdoment.AbstractionsRepository().RepositoryName, false, false); err != nil {
+			return nil, intlib.FunctionNameAndError(n.RepoAbstractionsFindActiveOneByIDAndAbstractionsDirectoryGroups, err)
+		} else {
+			columns = dbColumnFields.ColumnFieldsReadOrder
+		}
+	}
+
+	if !slices.Contains(columns, intdoment.AbstractionsRepository().ID) {
+		columns = append(columns, intdoment.AbstractionsRepository().ID)
+	}
+
+	selectColumns := make([]string, len(columns))
+	for cIndex, cValue := range columns {
+		selectColumns[cIndex] = intdoment.AbstractionsRepository().RepositoryName + "." + cValue
+	}
+
+	updateWhere := make([]string, 0)
+	if len(data.AbstractionsID) > 0 {
+		datumString := make([]string, len(data.AbstractionsID))
+		for dIndex, d := range data.AbstractionsID {
+			datumString[dIndex] = fmt.Sprintf("'%s'", d.String())
+		}
+
+		updateWhere = append(updateWhere,
+			fmt.Sprintf(
+				"%[1]s IN (%[2]s)",
+				intdoment.AbstractionsRepository().ID, //1
+				strings.Join(datumString, " , "),      //2
+			),
+		)
+	}
+
+	if len(updateWhere) == 0 {
+		if len(data.DirectoryGroupID) > 0 {
+			datumString := make([]string, len(data.DirectoryGroupID))
+			for dIndex, d := range data.DirectoryGroupID {
+				datumString[dIndex] = fmt.Sprintf("'%s'", d.String())
+			}
+
+			updateWhere = append(updateWhere,
+				fmt.Sprintf(
+					"%[1]s IN (%[2]s)",
+					intdoment.AbstractionsRepository().AbstractionsDirectoryGroupsID, //1
+					strings.Join(datumString, " , "),                                 //2
+				),
+			)
+		}
+
+		if len(data.DirectoryID) > 0 {
+			datumString := make([]string, len(data.DirectoryID))
+			for dIndex, d := range data.DirectoryID {
+				datumString[dIndex] = fmt.Sprintf("'%s'", d.String())
+			}
+
+			updateWhere = append(updateWhere,
+				fmt.Sprintf(
+					"%[1]s IN (%[2]s)",
+					intdoment.AbstractionsRepository().DirectoryID, //1
+					strings.Join(datumString, " , "),               //2
+				),
+			)
+		}
+
+		if len(data.StorageFilesFullTextSearch) > 0 {
+			datumString := make([]string, len(data.StorageFilesFullTextSearch))
+			for dIndex, d := range data.StorageFilesFullTextSearch {
+				datumString[dIndex] = fmt.Sprintf("'%s'", d)
+			}
+
+			updateWhere = append(updateWhere,
+				fmt.Sprintf(
+					"%[1]s IN (SELECT %[2]s FROM %[3]s WHERE %[4]s @@ to_tsquery(ARRAY_TO_STRING(ARRAY[%[5]s], ' | ')))",
+					intdoment.AbstractionsRepository().StorageFilesID, //1
+					intdoment.StorageFilesRepository().ID,             //2
+					intdoment.StorageFilesRepository().RepositoryName, //3
+					intdoment.StorageFilesRepository().FullTextSearch, //4
+					strings.Join(datumString, " , "),                  //5
+				),
+			)
+		}
+	}
+
+	if data.Completed != nil {
+		updateWhere = append(updateWhere, fmt.Sprintf("%s = %v", intdoment.AbstractionsRepository().Completed, *data.Completed))
+	}
+
+	if data.ReviewPass != nil {
+		updateWhere = append(updateWhere, fmt.Sprintf("%s = %v", intdoment.AbstractionsRepository().ReviewPass, *data.ReviewPass))
+	}
+
+	if len(updateWhere) == 0 {
+		return nil, errors.New("no condition set")
+	}
+
+	query := fmt.Sprintf(
+		"UPDATE %[1]s SET %[2]s = $1 WHERE %[3]s RETURNING %[4]s;",
+		intdoment.AbstractionsRepository().RepositoryName, //1
+		intdoment.AbstractionsRepository().DirectoryID,    //2
+		strings.Join(updateWhere, " AND "),                //3
+		strings.Join(columns, " , "),                      //4
+	)
+	n.logger.Log(ctx, slog.LevelDebug, query, "function", intlib.FunctionName(n.RepoAbstractionsUpdateDirectory))
+
+	rows, err := n.db.Query(ctx, query, *data.NewDirectoryID)
+	if err != nil {
+		return nil, intlib.FunctionNameAndError(n.RepoAbstractionsUpdateDirectory, fmt.Errorf("retrieve %s failed, err: %v", intdoment.AbstractionsRepository().RepositoryName, err))
+	}
+
+	defer rows.Close()
+	dataRows := make([]any, 0)
+	for rows.Next() {
+		if r, err := rows.Values(); err != nil {
+			return nil, intlib.FunctionNameAndError(n.RepoAbstractionsUpdateDirectory, err)
+		} else {
+			dataRows = append(dataRows, r)
+		}
+	}
+
+	array2DToObject, err := intlibmmodel.NewConvert2DArrayToObjects(abstractionsMetadataModel, nil, false, false, columns)
+	if err != nil {
+		return nil, intlib.FunctionNameAndError(n.RepoAbstractionsUpdateDirectory, err)
+	}
+	if err := array2DToObject.Convert(dataRows); err != nil {
+		return nil, intlib.FunctionNameAndError(n.RepoAbstractionsUpdateDirectory, err)
+	}
+
+	abstractions := make([]*intdoment.Abstractions, 0)
+	if jsonData, err := json.Marshal(array2DToObject.Objects()); err != nil {
+		return nil, intlib.FunctionNameAndError(n.RepoAbstractionsUpdateDirectory, err)
+	} else {
+		n.logger.Log(ctx, slog.LevelDebug, "json parsing abstractions", "abstractions", string(jsonData), "function", intlib.FunctionName(n.RepoAbstractionsUpdateDirectory))
+		if err := json.Unmarshal(jsonData, &abstractions); err != nil {
+			return nil, intlib.FunctionNameAndError(n.RepoAbstractionsUpdateDirectory, err)
+		}
+	}
+
+	return abstractions, nil
+}
+
 func (n *PostrgresRepository) RepoAbstractionsFindActiveOneByIDAndAbstractionsDirectoryGroups(
 	ctx context.Context,
 	id uuid.UUID,

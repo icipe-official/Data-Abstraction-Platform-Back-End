@@ -15,6 +15,64 @@ import (
 	intlib "github.com/icipe-official/Data-Abstraction-Platform-Back-End/internal/lib"
 )
 
+func (n *service) ServiceAbstractionsUpdateDirectory(
+	ctx context.Context,
+	iamCredential *intdoment.IamCredentials,
+	authContextDirectoryGroupID uuid.UUID,
+	verboseResponse bool,
+	data *intdoment.AbstractionsUpdateDirectory,
+) (int, *intdoment.MetadataModelVerbRes, error) {
+	if iar, err := n.repo.RepoIamGroupAuthorizationsGetAuthorized(
+		ctx,
+		iamCredential,
+		authContextDirectoryGroupID,
+		[]*intdoment.IamGroupAuthorizationRule{
+			{
+				ID:        intdoment.AUTH_RULE_UPDATE_DIRECTORY,
+				RuleGroup: intdoment.AUTH_RULE_GROUP_ABSTRACTIONS,
+			},
+		},
+		nil,
+	); err != nil {
+		return http.StatusInternalServerError, nil, errors.New("get iam auth rule failed " + err.Error())
+	} else {
+		if iar == nil {
+			return http.StatusForbidden, nil, errors.New(http.StatusText(http.StatusForbidden))
+		}
+	}
+
+	verbres := new(intdoment.MetadataModelVerbRes)
+	verbres.MetadataModelVerboseResponse = new(intdoment.MetadataModelVerboseResponse)
+	if verboseResponse {
+		if d, err := intlib.MetadataModelMiscGet(intlib.METADATA_MODELS_MISC_VERBOSE_RESPONSE); err != nil {
+			n.logger.Log(ctx, slog.LevelError, intlib.FunctionNameAndError(n.ServiceAbstractionsUpdateMany, err).Error())
+			return 0, nil, intlib.NewError(http.StatusInternalServerError, fmt.Sprintf("Get %v metadata-model failed", intlib.METADATA_MODELS_MISC_VERBOSE_RESPONSE))
+		} else {
+			verbres.MetadataModelVerboseResponse.MetadataModel = d
+		}
+	}
+	verbres.MetadataModelVerboseResponse.Data = make([]*intdoment.MetadataModelVerboseResponseData, 0)
+
+	if res, err := n.repo.RepoAbstractionsUpdateDirectory(ctx, authContextDirectoryGroupID, data, nil); err != nil {
+		n.logger.Log(ctx, slog.LevelError, intlib.FunctionNameAndError(n.ServiceAbstractionsUpdateDirectory, err).Error())
+		return http.StatusInternalServerError, nil, fmt.Errorf("update %s %s failed, error: %v", intdoment.AbstractionsRepository().RepositoryName, intdoment.AbstractionsRepository().DirectoryID, err)
+	} else {
+		verbres.Message = fmt.Sprintf("update %s %s executed", intdoment.AbstractionsRepository().RepositoryName, intdoment.AbstractionsRepository().DirectoryID)
+		verbres.Successful = len(res)
+		for _, value := range res {
+			verbres.MetadataModelVerboseResponse.Data = append(verbres.MetadataModelVerboseResponse.Data, &intdoment.MetadataModelVerboseResponseData{
+				Status: []intdoment.MetadataModelVerboseResponseStatus{{
+					StatusCode:    []int{http.StatusOK},
+					StatusMessage: []string{http.StatusText(http.StatusOK)},
+				}},
+				Data: []any{value},
+			})
+		}
+	}
+
+	return http.StatusOK, verbres, nil
+}
+
 func (n *service) ServiceAbstractionsDeleteMany(
 	ctx context.Context,
 	iamCredential *intdoment.IamCredentials,

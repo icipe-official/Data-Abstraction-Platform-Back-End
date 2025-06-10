@@ -8,6 +8,12 @@ import (
 )
 
 type RouteAbstractionsRepository interface {
+	RepoAbstractionsUpdateDirectory(
+		ctx context.Context,
+		authContextDirectoryGroupID uuid.UUID,
+		data *intdoment.AbstractionsUpdateDirectory,
+		columns []string,
+	) ([]*intdoment.Abstractions, error)
 	RepoAbstractionsDeleteOne(
 		ctx context.Context,
 		iamAuthRule *intdoment.IamAuthorizationRule,
@@ -61,6 +67,13 @@ type RouteAbstractionsRepository interface {
 }
 
 type RouteAbstractionsApiCoreService interface {
+	ServiceAbstractionsUpdateDirectory(
+		ctx context.Context,
+		iamCredential *intdoment.IamCredentials,
+		authContextDirectoryGroupID uuid.UUID,
+		verboseResponse bool,
+		data *intdoment.AbstractionsUpdateDirectory,
+	) (int, *intdoment.MetadataModelVerbRes, error)
 	ServiceAbstractionsDeleteMany(
 		ctx context.Context,
 		iamCredential *intdoment.IamCredentials,

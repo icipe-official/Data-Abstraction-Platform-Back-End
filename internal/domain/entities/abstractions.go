@@ -55,3 +55,13 @@ func AbstractionsRepository() abstractionsRepository {
 		FullTextSearch:                "full_text_search",
 	}
 }
+
+type AbstractionsUpdateDirectory struct {
+	DirectoryID                []uuid.UUID `json:"directory_id,omitempty"`
+	DirectoryGroupID           []uuid.UUID `json:"directory_group_id,omitempty"`
+	AbstractionsID             []uuid.UUID `json:"abstractions_id,omitempty"`
+	StorageFilesFullTextSearch []string    `json:"storage_files_full_text_search,omitempty"`
+	Completed                  *bool       `json:"completed,omitempty"`
+	ReviewPass                 *bool       `json:"review_pass,omitempty"`
+	NewDirectoryID             *uuid.UUID  `json:"new_directory_id,omitempty"`
+}

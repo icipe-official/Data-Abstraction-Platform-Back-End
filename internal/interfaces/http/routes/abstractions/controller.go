@@ -21,6 +21,63 @@ import (
 func ApiCoreRouter(webService *inthttp.WebService) *chi.Mux {
 	router := chi.NewRouter()
 
+	router.Post("/update_directory", func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), intlib.LOG_ATTR_CTX_KEY, slog.Attr{Key: intlib.LogSectionAttrKey, Value: slog.StringValue(intlib.LogSectionName(r.URL.Path, webService.Env))})
+
+		authedIamCredential, err := intlib.IamHttpRequestCtxGetAuthedIamCredential(r)
+		if err != nil {
+			intlib.SendJsonErrorResponse(err, w)
+			return
+		}
+
+		data := new(intdoment.AbstractionsUpdateDirectory)
+		if err := json.NewDecoder(r.Body).Decode(data); err != nil {
+			intlib.SendJsonErrorResponse(intlib.NewError(http.StatusBadRequest, http.StatusText(http.StatusBadRequest)), w)
+			return
+		}
+
+		s := initApiCoreService(ctx, webService)
+		if s == nil {
+			intlib.SendJsonErrorResponse(intlib.NewError(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError)), w)
+			return
+		}
+
+		var authContextDirectoryGroupID uuid.UUID
+		if value, err := intlib.UrlSearchParamGetUuid(r, intlib.URL_SEARCH_PARAM_AUTH_CONTEXT_DIRECTORY_GROUP_ID); err != nil {
+			if directoryGroup, err := s.ServiceDirectoryGroupsFindOneByIamCredentialID(ctx, authedIamCredential.ID[0]); err != nil {
+				intlib.SendJsonErrorResponse(intlib.NewError(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError)), w)
+				return
+			} else {
+				if directoryGroup == nil {
+					intlib.SendJsonErrorResponse(intlib.NewError(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError)), w)
+					return
+				}
+				authContextDirectoryGroupID = directoryGroup.ID[0]
+			}
+		} else {
+			authContextDirectoryGroupID = value
+		}
+
+		verboseResponse := intlib.UrlSearchParamGetBool(r, intlib.URL_SEARCH_PARAM_VERBOSE_RESPONSE, false)
+
+		if code, verbres, err := s.ServiceAbstractionsUpdateDirectory(ctx, authedIamCredential, authContextDirectoryGroupID, verboseResponse, data); err != nil {
+			intlib.SendJsonErrorResponse(err, w)
+			return
+		} else {
+			intlib.SendJsonResponse(code, verbres, w)
+			webService.Logger.Log(
+				ctx,
+				slog.LevelInfo+1,
+				intlib.LogAction(intlib.LOG_ACTION_UPDATE, intdoment.AbstractionsRepository().RepositoryName),
+				ctx.Value(intlib.LOG_ATTR_CTX_KEY),
+				"authenicated iam credential",
+				intlib.JsonStringifyMust(authedIamCredential),
+				"verbose response data",
+				intlib.JsonStringifyMust(verbres.MetadataModelVerboseResponse.Data),
+			)
+		}
+	})
+
 	router.Post("/delete", func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), intlib.LOG_ATTR_CTX_KEY, slog.Attr{Key: intlib.LogSectionAttrKey, Value: slog.StringValue(intlib.LogSectionName(r.URL.Path, webService.Env))})
 
