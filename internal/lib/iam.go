@@ -18,6 +18,8 @@ func IamAuthenticationMiddleware(logger intdomint.Logger, env *EnvVariables, ope
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			openIDToken := new(intdoment.OpenIDToken)
+
+			tokenFromCookie := false
 			if accessToken := r.Header.Get(IamCookieGetAccessTokenName(iamCookie.Name)); len(accessToken) > 0 {
 				token := ""
 				if env.Get(ENV_IAM_ENCRYPT_TOKENS) != "false" {
@@ -61,6 +63,8 @@ func IamAuthenticationMiddleware(logger intdomint.Logger, env *EnvVariables, ope
 							openIDToken.AccessToken = string(tokenBytes)
 						}
 					}
+
+					tokenFromCookie = true
 				}
 			}
 
@@ -113,7 +117,7 @@ func IamAuthenticationMiddleware(logger intdomint.Logger, env *EnvVariables, ope
 					return
 				}
 
-				if strings.HasPrefix(r.URL.Path, fmt.Sprintf("%siam/refresh-token", env.Get(ENV_WEB_SERVICE_BASE_PATH))) {
+				if strings.HasPrefix(r.URL.Path, fmt.Sprintf("%siam/refresh-token", env.Get(ENV_WEB_SERVICE_BASE_PATH))) || tokenFromCookie {
 					if newToken, err := openId.OpenIDRefreshToken(openIDToken); err != nil {
 						logger.Log(r.Context(), slog.LevelError, fmt.Sprintf("refresh open id token failed, error: %v", err))
 						next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), ERROR_CODE_CTX_KEY, NewError(http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized)))))
@@ -133,7 +137,11 @@ func IamAuthenticationMiddleware(logger intdomint.Logger, env *EnvVariables, ope
 								next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), ERROR_CODE_CTX_KEY, NewError(http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized)))))
 								return
 							} else {
-								newAccessRefreshToken = token
+								if tokenFromCookie {
+									IamSetCookieInResponse(w, iamCookie, token, int(openIDToken.ExpiresIn), int(openIDToken.RefreshExpiresIn))
+								} else {
+									newAccessRefreshToken = token
+								}
 							}
 							openIDTokenIntrospect = nvalue
 						}
@@ -164,6 +172,10 @@ func IamAuthenticationMiddleware(logger intdomint.Logger, env *EnvVariables, ope
 			if strings.HasPrefix(r.URL.Path, fmt.Sprintf("%siam/sign-out", env.Get(ENV_WEB_SERVICE_BASE_PATH))) {
 				if err := openId.OpenIDRevokeToken(openIDToken); err != nil {
 					logger.Log(r.Context(), slog.LevelWarn, fmt.Sprintf("revoke open id token for logout failed, error: %v", err))
+				}
+
+				if tokenFromCookie {
+					IamSetCookieInResponse(w, iamCookie, new(IamAccessRefreshToken), 0, 0)
 				}
 			}
 

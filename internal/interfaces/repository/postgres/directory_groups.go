@@ -545,6 +545,11 @@ func (n *PostgresSelectQuery) DirectoryGroupsGetSelectQuery(ctx context.Context,
 			selectQuery.Where[intdoment.DirectoryGroupsRepository().Data] = value
 		}
 	}
+	if fgKeyString, ok := selectQuery.Columns.Fields[intdoment.DirectoryGroupsRepository().Data][intlibmmodel.FIELD_GROUP_PROP_FIELD_GROUP_KEY].(string); ok {
+		if value := n.getWhereCondition(quoteColumns, selectQuery.TableUid, "", intdoment.DirectoryGroupsRepository().Data, fgKeyString, PROCESS_QUERY_CONDITION_AS_SINGLE_VALUE, ""); len(value) > 0 {
+			selectQuery.Where[intdoment.DirectoryGroupsRepository().Data] = value
+		}
+	}
 	if _, ok := selectQuery.Columns.Fields[intdoment.DirectoryGroupsRepository().CreatedOn][intlibmmodel.FIELD_GROUP_PROP_FIELD_GROUP_KEY].(string); ok {
 		if value := n.getWhereCondition(quoteColumns, selectQuery.TableUid, "", intdoment.DirectoryGroupsRepository().CreatedOn, "", PROCESS_QUERY_CONDITION_AS_SINGLE_VALUE, ""); len(value) > 0 {
 			selectQuery.Where[intdoment.DirectoryGroupsRepository().CreatedOn] = value

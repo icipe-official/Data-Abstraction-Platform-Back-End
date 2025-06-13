@@ -455,25 +455,25 @@ func (n *PostgresSelectQuery) IamGroupAuthorizationsGetSelectQuery(ctx context.C
 	}
 
 	if fgKeyString, ok := selectQuery.Columns.Fields[intdoment.IamGroupAuthorizationsRepository().IamCredentialsID][intlibmmodel.FIELD_GROUP_PROP_FIELD_GROUP_KEY].(string); ok {
-		if value := n.getWhereCondition(quoteColumns, selectQuery.TableUid, "", intdoment.IamGroupAuthorizationsRepository().ID, fgKeyString, PROCESS_QUERY_CONDITION_AS_SINGLE_VALUE, ""); len(value) > 0 {
+		if value := n.getWhereCondition(quoteColumns, selectQuery.TableUid, "", intdoment.IamGroupAuthorizationsRepository().IamCredentialsID, fgKeyString, PROCESS_QUERY_CONDITION_AS_SINGLE_VALUE, ""); len(value) > 0 {
 			selectQuery.Where[intdoment.IamGroupAuthorizationsRepository().IamCredentialsID] = value
 		}
 	}
 
 	if fgKeyString, ok := selectQuery.Columns.Fields[intdoment.IamGroupAuthorizationsRepository().GroupRuleAuthorizationsID][intlibmmodel.FIELD_GROUP_PROP_FIELD_GROUP_KEY].(string); ok {
-		if value := n.getWhereCondition(quoteColumns, selectQuery.TableUid, "", intdoment.IamGroupAuthorizationsRepository().ID, fgKeyString, PROCESS_QUERY_CONDITION_AS_SINGLE_VALUE, ""); len(value) > 0 {
+		if value := n.getWhereCondition(quoteColumns, selectQuery.TableUid, "", intdoment.IamGroupAuthorizationsRepository().GroupRuleAuthorizationsID, fgKeyString, PROCESS_QUERY_CONDITION_AS_SINGLE_VALUE, ""); len(value) > 0 {
 			selectQuery.Where[intdoment.IamGroupAuthorizationsRepository().GroupRuleAuthorizationsID] = value
 		}
 	}
 
 	if fgKeyString, ok := selectQuery.Columns.Fields[intdoment.IamGroupAuthorizationsRepository().CreatedOn][intlibmmodel.FIELD_GROUP_PROP_FIELD_GROUP_KEY].(string); ok {
-		if value := n.getWhereCondition(quoteColumns, selectQuery.TableUid, "", intdoment.IamGroupAuthorizationsRepository().ID, fgKeyString, PROCESS_QUERY_CONDITION_AS_SINGLE_VALUE, ""); len(value) > 0 {
+		if value := n.getWhereCondition(quoteColumns, selectQuery.TableUid, "", intdoment.IamGroupAuthorizationsRepository().CreatedOn, fgKeyString, PROCESS_QUERY_CONDITION_AS_SINGLE_VALUE, ""); len(value) > 0 {
 			selectQuery.Where[intdoment.IamGroupAuthorizationsRepository().CreatedOn] = value
 		}
 	}
 
 	if fgKeyString, ok := selectQuery.Columns.Fields[intdoment.IamGroupAuthorizationsRepository().DeactivatedOn][intlibmmodel.FIELD_GROUP_PROP_FIELD_GROUP_KEY].(string); ok {
-		if value := n.getWhereCondition(quoteColumns, selectQuery.TableUid, "", intdoment.IamGroupAuthorizationsRepository().ID, fgKeyString, PROCESS_QUERY_CONDITION_AS_SINGLE_VALUE, ""); len(value) > 0 {
+		if value := n.getWhereCondition(quoteColumns, selectQuery.TableUid, "", intdoment.IamGroupAuthorizationsRepository().DeactivatedOn, fgKeyString, PROCESS_QUERY_CONDITION_AS_SINGLE_VALUE, ""); len(value) > 0 {
 			selectQuery.Where[intdoment.IamGroupAuthorizationsRepository().DeactivatedOn] = value
 		}
 	}
