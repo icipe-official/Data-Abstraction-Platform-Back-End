@@ -697,6 +697,9 @@ func GetWhereConditionForJsonbValue(columName string, queryPath string, columnFg
 
 	parentPath := intlibmmodel.GetPathToValue(columnFgKey, true, intlibmmodel.ARRAY_PATH_PLACEHOLDER)
 	queryPath = strings.Replace(queryPath, parentPath+intlibmmodel.ARRAY_PATH_PLACEHOLDER, "$", 1)
+	if !strings.HasSuffix(queryPath, intlibmmodel.ARRAY_PATH_PLACEHOLDER) {
+		queryPath += intlibmmodel.ARRAY_PATH_PLACEHOLDER
+	}
 	selectJsonbElementsQuery := fmt.Sprintf("jsonb_path_query(%s, '%s')", columName, queryPath)
 	selectJsonbElementsQueryTrim := fmt.Sprintf(`trim(both '\"' FROM %s::text) as jsonb_element_text`, jsonbElementColumnName)
 	jsonbElementTextColumnName := "jsonb_element_text"
@@ -821,24 +824,30 @@ func GetWhereConditionForJsonbValue(columName string, queryPath string, columnFg
 					andCondition = fmt.Sprintf("EXISTS(SELECT 1 FROM %s AS %s, %s WHERE %s)", selectJsonbElementsQuery, jsonbElementColumnName, selectJsonbElementsQueryTrim, c)
 				}
 			case intlibmmodel.FILTER_CONDTION_EQUAL_TO:
-				cName := jsonbElementColumnName
-				if len(andFilterCondition.DateTimeFormat) > 0 || reflect.TypeOf(andFilterCondition.Value).Kind() == reflect.String {
-					cName = jsonbElementTextColumnName
+				if valueEqual, ok := andFilterCondition.Value.(map[string]any); ok {
+					if vValue, ok := valueEqual[intlibmmodel.FIELD_SELECT_PROP_VALUE]; ok {
+						cName := jsonbElementColumnName
+						if len(andFilterCondition.DateTimeFormat) > 0 || reflect.TypeOf(vValue).Kind() == reflect.String {
+							cName = jsonbElementTextColumnName
+						}
+						c := ColumnEqualTo(cName, valueEqual)
+						if len(c) == 0 {
+							break
+						}
+						initWhereOr()
+						initWhereAnd(orIndex, &whereAnd)
+						if andFilterCondition.Negate {
+							c = "NOT " + c
+						}
+
+						if len(andFilterCondition.DateTimeFormat) > 0 || reflect.TypeOf(vValue).Kind() == reflect.String {
+							andCondition = fmt.Sprintf("EXISTS(SELECT 1 FROM %s as %s, %s WHERE %s)", selectJsonbElementsQuery, jsonbElementColumnName, selectJsonbElementsQueryTrim, c)
+						} else {
+							andCondition = fmt.Sprintf("EXISTS(SELECT 1 FROM %s as %s WHERE %s)", selectJsonbElementsQuery, jsonbElementColumnName, c)
+						}
+					}
 				}
-				c := ColumnEqualTo(cName, andFilterCondition.Value)
-				if len(c) == 0 {
-					break
-				}
-				initWhereOr()
-				initWhereAnd(orIndex, &whereAnd)
-				if andFilterCondition.Negate {
-					c = "NOT " + c
-				}
-				if len(andFilterCondition.DateTimeFormat) > 0 || reflect.TypeOf(andFilterCondition.Value).Kind() == reflect.String {
-					andCondition = fmt.Sprintf("EXISTS(SELECT 1 FROM %s as %s, %s WHERE %s)", selectJsonbElementsQuery, jsonbElementColumnName, selectJsonbElementsQueryTrim, c)
-				} else {
-					andCondition = fmt.Sprintf("EXISTS(SELECT 1 FROM %s as %s WHERE %s)", selectJsonbElementsQuery, jsonbElementColumnName, c)
-				}
+
 			}
 
 			if len(andCondition) > 0 {

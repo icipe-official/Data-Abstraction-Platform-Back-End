@@ -1103,9 +1103,9 @@ func (n *PostgresSelectQuery) AbstractionsGetSelectQuery(ctx context.Context, me
 			selectQuery.Where[intdoment.AbstractionsRepository().Data] = value
 		}
 	}
-	if _, ok := selectQuery.Columns.Fields[intdoment.AbstractionsRepository().Completed][intlibmmodel.FIELD_GROUP_PROP_FIELD_GROUP_KEY].(string); ok {
-		if value := n.getWhereCondition(quoteColumns, selectQuery.TableUid, "", intdoment.AbstractionsRepository().Completed, "", PROCESS_QUERY_CONDITION_AS_SINGLE_VALUE, ""); len(value) > 0 {
-			selectQuery.Where[intdoment.AbstractionsRepository().Completed] = value
+	if fgKeyString, ok := selectQuery.Columns.Fields[intdoment.AbstractionsRepository().Data][intlibmmodel.FIELD_GROUP_PROP_FIELD_GROUP_KEY].(string); ok {
+		if value := n.getWhereCondition(quoteColumns, selectQuery.TableUid, "", intdoment.AbstractionsRepository().Data, fgKeyString, PROCESS_QUERY_CONDITION_AS_JSONB, ""); len(value) > 0 {
+			selectQuery.Where[intdoment.AbstractionsRepository().Data] = value
 		}
 	}
 	if _, ok := selectQuery.Columns.Fields[intdoment.AbstractionsRepository().ReviewPass][intlibmmodel.FIELD_GROUP_PROP_FIELD_GROUP_KEY].(string); ok {
