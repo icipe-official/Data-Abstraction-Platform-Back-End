@@ -14,15 +14,15 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/go-chi/httplog/v2"
 	intfs "github.com/icipe-official/Data-Abstraction-Platform-Back-End/internal/interfaces/file_service"
-	inthttp "github.com/icipe-official/Data-Abstraction-Platform-Back-End/internal/interfaces/http"
-	inthttprouters "github.com/icipe-official/Data-Abstraction-Platform-Back-End/internal/interfaces/http/routers"
 	intopenidkeycloak "github.com/icipe-official/Data-Abstraction-Platform-Back-End/internal/interfaces/openid/keycloak"
 	intrepopostgres "github.com/icipe-official/Data-Abstraction-Platform-Back-End/internal/interfaces/repository/postgres"
+	intwebservice "github.com/icipe-official/Data-Abstraction-Platform-Back-End/internal/interfaces/web_service"
+	inthttprouters "github.com/icipe-official/Data-Abstraction-Platform-Back-End/internal/interfaces/web_service/routers"
 	intlib "github.com/icipe-official/Data-Abstraction-Platform-Back-End/internal/lib"
 )
 
 func main() {
-	webService := new(inthttp.WebService)
+	webService := new(intwebservice.WebService)
 	webService.Logger = httplog.NewLogger(intlib.LogGetServiceName("web-service"), httplog.Options{
 		JSON:             intlib.LogGetOptionBool("LOG_USE_JSON"),
 		LogLevel:         slog.Level(intlib.LogGetLevel()),

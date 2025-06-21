@@ -190,67 +190,57 @@ func (n *Convert2DArrayToObjects) initgConversion(mmGroup any, databaseColumnNam
 
 		if _, err := GetGroupFields(fgMap); err == nil {
 			if gReadOrderOfFields, err := GetGroupReadOrderOfFields(fgMap); err == nil {
-				if value, ok := fgMap[FIELD_GROUP_PROP_GROUP_EXTRACT_AS_SINGLE_FIELD].(bool); ok && value {
-					if value, err := n.get2DFieldsIndexesFromCurrentGroupIndexes(mmGroupConversion.Fields2DIndexes, fgMapKey); err != nil {
-						return groupConversion{}, FunctionNameAndError(n.initgConversion, err)
-					} else if len(value) == 0 {
-						return groupConversion{}, FunctionNameAndError(n.initgConversion, fmt.Errorf("Fields2DIndexes is empty | %s | %v", fgMapKey, mmGroupConversion.Fields2DIndexes))
-					} else {
-						newFieldConversion.Fields2DIndexes = value
-						mmGroupConversion.Fields = append(mmGroupConversion.Fields, newFieldConversion)
-					}
-					continue
-				}
-
-				if fgViewMaxNoOfValuesInSeparateColumns := FgGet2DConversion(fgMap); fgViewMaxNoOfValuesInSeparateColumns > 1 {
-					if g, err := func() ([]string, error) {
-						gReadOrderOfFieldsString := make([]string, len(gReadOrderOfFields))
-						for groofIndex, groof := range gReadOrderOfFields {
-							if groofString, ok := groof.(string); ok {
-								gReadOrderOfFieldsString[groofIndex] = groofString
-							} else {
-								return nil, argumentsError(n.initgConversion, "groof", "string", groof)
-							}
-						}
-						return gReadOrderOfFieldsString, nil
-					}(); err != nil {
-						return groupConversion{}, FunctionNameAndError(n.initgConversion, err)
-					} else {
-						newFieldConversion.ReadOrderOfFields = g
-					}
-
-					newFieldConversion.ColumnIndexesThatMatchIndexHeader = make([][]int, fgViewMaxNoOfValuesInSeparateColumns)
-					for columnIndex := range fgViewMaxNoOfValuesInSeparateColumns {
-						columnIndexHeaders := make([]int, 0)
-						for fIndex, fValue := range n.fields2D {
-							fMap, err := GetFieldGroupMap(fValue)
-							if err != nil {
-								return groupConversion{}, FunctionNameAndError(n.initgConversion, err)
-							}
-
-							fKeyString, err := GetValueAsString(fMap[FIELD_GROUP_PROP_FIELD_GROUP_KEY])
-							if err != nil {
-								return groupConversion{}, FunctionNameAndError(n.initgConversion, err)
-							}
-
-							if strings.HasPrefix(fKeyString, fgMapKey) {
-								if fMap[FIELD_GROUP_PROP_FIELD_VIEW_VALUES_IN_SEPARATE_COLUMNS_HEADER_INDEX] == columnIndex {
-									columnIndexHeaders = append(columnIndexHeaders, fIndex)
+				if value, ok := fgMap[FIELD_GROUP_PROP_GROUP_EXTRACT_AS_SINGLE_FIELD].(bool); !ok || !value {
+					if fgViewMaxNoOfValuesInSeparateColumns := FgGet2DConversion(fgMap); fgViewMaxNoOfValuesInSeparateColumns > 1 {
+						if g, err := func() ([]string, error) {
+							gReadOrderOfFieldsString := make([]string, len(gReadOrderOfFields))
+							for groofIndex, groof := range gReadOrderOfFields {
+								if groofString, ok := groof.(string); ok {
+									gReadOrderOfFieldsString[groofIndex] = groofString
+								} else {
+									return nil, argumentsError(n.initgConversion, "groof", "string", groof)
 								}
 							}
+							return gReadOrderOfFieldsString, nil
+						}(); err != nil {
+							return groupConversion{}, FunctionNameAndError(n.initgConversion, err)
+						} else {
+							newFieldConversion.ReadOrderOfFields = g
 						}
-						newFieldConversion.ColumnIndexesThatMatchIndexHeader[columnIndex] = columnIndexHeaders
+
+						newFieldConversion.ColumnIndexesThatMatchIndexHeader = make([][]int, fgViewMaxNoOfValuesInSeparateColumns)
+						for columnIndex := range fgViewMaxNoOfValuesInSeparateColumns {
+							columnIndexHeaders := make([]int, 0)
+							for fIndex, fValue := range n.fields2D {
+								fMap, err := GetFieldGroupMap(fValue)
+								if err != nil {
+									return groupConversion{}, FunctionNameAndError(n.initgConversion, err)
+								}
+
+								fKeyString, err := GetValueAsString(fMap[FIELD_GROUP_PROP_FIELD_GROUP_KEY])
+								if err != nil {
+									return groupConversion{}, FunctionNameAndError(n.initgConversion, err)
+								}
+
+								if strings.HasPrefix(fKeyString, fgMapKey) {
+									if fMap[FIELD_GROUP_PROP_FIELD_VIEW_VALUES_IN_SEPARATE_COLUMNS_HEADER_INDEX] == columnIndex {
+										columnIndexHeaders = append(columnIndexHeaders, fIndex)
+									}
+								}
+							}
+							newFieldConversion.ColumnIndexesThatMatchIndexHeader[columnIndex] = columnIndexHeaders
+						}
+
+						mmGroupConversion.Fields = append(mmGroupConversion.Fields, newFieldConversion)
+						continue
 					}
 
-					mmGroupConversion.Fields = append(mmGroupConversion.Fields, newFieldConversion)
-					continue
-				}
-
-				if gConversion, err := n.initgConversion(fgMap, databaseColumnNames); err != nil {
-					return groupConversion{}, FunctionNameAndError(n.initgConversion, err)
-				} else {
-					mmGroupConversion.Groups = append(mmGroupConversion.Groups, gConversion)
-					continue
+					if gConversion, err := n.initgConversion(fgMap, databaseColumnNames); err != nil {
+						return groupConversion{}, FunctionNameAndError(n.initgConversion, err)
+					} else {
+						mmGroupConversion.Groups = append(mmGroupConversion.Groups, gConversion)
+						continue
+					}
 				}
 			}
 		}

@@ -106,9 +106,11 @@ func (n *databaseGetColumnFields) GetDatabaseColumnFields(mmGroup any) error {
 		}
 
 		if _, err := GetGroupFields(fgMap); err == nil {
-			if _, err := GetGroupReadOrderOfFields(fgMap); err == nil {
-				n.GetDatabaseColumnFields(fgMap)
-				continue
+			if value, ok := fgMap[FIELD_GROUP_PROP_GROUP_EXTRACT_AS_SINGLE_FIELD].(bool); !ok || !value {
+				if _, err := GetGroupReadOrderOfFields(fgMap); err == nil {
+					n.GetDatabaseColumnFields(fgMap)
+					continue
+				}
 			}
 		}
 

@@ -22,8 +22,8 @@ CREATE TABLE public.abstractions_reviews
 ALTER TABLE IF EXISTS public.abstractions_reviews
     OWNER to pg_database_owner;
 
-COMMENT ON TABLE public.abstractions_reviews
-    IS 'Reviews on abstractions. Contributes towards the review_pass of the abstractions.';
+
+
 
 -- abstractions_reviews_comments table
 CREATE TABLE public.abstractions_reviews_comments
@@ -48,6 +48,3 @@ CREATE TABLE public.abstractions_reviews_comments
 
 ALTER TABLE IF EXISTS public.abstractions_reviews_comments
     OWNER to pg_database_owner;
-
-COMMENT ON TABLE public.abstractions_reviews_comments
-    IS 'Comments on abstraction reviews';

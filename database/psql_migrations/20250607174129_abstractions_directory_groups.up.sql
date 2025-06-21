@@ -26,9 +26,6 @@ CREATE TABLE public.abstractions_directory_groups
 ALTER TABLE IF EXISTS public.abstractions_directory_groups
     OWNER to pg_database_owner;
 
-COMMENT ON TABLE public.abstractions_directory_groups
-    IS 'setup abstractions properties for group';
-
 -- abstractions_directory_groups trigger to update last_updated_on column
 CREATE TRIGGER abstractions_directory_groups_update_last_updated_on
     BEFORE UPDATE OF description, abstraction_review_quorum
@@ -36,8 +33,8 @@ CREATE TRIGGER abstractions_directory_groups_update_last_updated_on
     FOR EACH ROW
     EXECUTE FUNCTION public.update_last_updated_on();
 
-COMMENT ON TRIGGER abstractions_directory_groups_update_last_updated_on ON public.abstractions_directory_groups
-    IS 'update timestamp upon update on relevant columns';
+
+
 
 -- abstractions_directory_groups_authorization_ids table
 CREATE TABLE public.abstractions_directory_groups_authorization_ids
@@ -65,6 +62,3 @@ CREATE TABLE public.abstractions_directory_groups_authorization_ids
 
 ALTER TABLE IF EXISTS public.abstractions_directory_groups_authorization_ids
     OWNER to pg_database_owner;
-
-COMMENT ON TABLE public.abstractions_directory_groups_authorization_ids
-    IS 'authorization ids that were used to create and/or deactivate the resources';

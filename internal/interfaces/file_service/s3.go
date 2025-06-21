@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	intdoment "github.com/icipe-official/Data-Abstraction-Platform-Back-End/internal/domain/entities"
@@ -56,17 +57,27 @@ func (n *S3) Create(ctx context.Context, storageFile *intdoment.StorageFiles, fi
 		return intlib.FunctionNameAndError(n.Create, errors.New("storageFile.SizeInBytes is empty"))
 	}
 
-	if len(storageFile.StorageFileMimeType[0]) < 1 {
+	if len(storageFile.StorageFileMimeType) < 1 {
 		return intlib.FunctionNameAndError(n.Create, errors.New("storageFile.StorageFileMimeType is empty"))
 	}
 
-	if uploadInfo, err := n.client.PutObject(ctx, n.bucket, storageFile.ID[0].String(), file, storageFile.SizeInBytes[0], minio.PutObjectOptions{
+	minioPutOptions := minio.PutObjectOptions{
 		ContentType: storageFile.StorageFileMimeType[0],
-	}); err != nil {
+	}
+
+	minioPutOptions.UserMetadata = map[string]string{}
+	if len(storageFile.OriginalName) > 0 {
+		minioPutOptions.UserMetadata[intdoment.StorageFilesRepository().OriginalName] = storageFile.OriginalName[0]
+	}
+	if len(storageFile.Tags) > 0 {
+		minioPutOptions.UserMetadata[intdoment.StorageFilesRepository().Tags] = strings.Join(storageFile.Tags, " , ")
+	}
+
+	if uploadInfo, err := n.client.PutObject(ctx, n.bucket, storageFile.ID[0].String(), file, storageFile.SizeInBytes[0], minioPutOptions); err != nil {
 		n.logger.Log(ctx, slog.LevelError, fmt.Sprintf("upload file failed, err: %v", err), "storageFile", intlib.JsonStringifyMust(storageFile))
 		return intlib.FunctionNameAndError(n.Create, fmt.Errorf("upload file failed, err: %v", err))
 	} else {
-		n.logger.Log(ctx, slog.LevelError, "file uploaded", "uploadInfo", intlib.JsonStringifyMust(uploadInfo))
+		n.logger.Log(ctx, slog.LevelInfo+2, "file uploaded", "uploadInfo", intlib.JsonStringifyMust(uploadInfo))
 		return nil
 	}
 }

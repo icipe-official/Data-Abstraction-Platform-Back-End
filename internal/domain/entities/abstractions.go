@@ -65,3 +65,14 @@ type AbstractionsUpdateDirectory struct {
 	ReviewPass                 *bool       `json:"review_pass,omitempty"`
 	NewDirectoryID             *uuid.UUID  `json:"new_directory_id,omitempty"`
 }
+
+type AbstractionsExportColumns struct {
+	Name        string `json:"name,omitempty"`
+	DisplayName string `json:"display_name,omitempty"`
+}
+
+type AbstractionsExportData struct {
+	Columns          []AbstractionsExportColumns `json:"columns,omitempty"`
+	MetadataModelsID uuid.UUID                   `json:"metadata_models_id,omitempty"`
+	MetadataModel    any                         `json:"metadata_model,omitempty"`
+}

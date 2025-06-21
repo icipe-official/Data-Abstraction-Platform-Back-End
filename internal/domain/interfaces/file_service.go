@@ -16,6 +16,8 @@ type FormFileUpload interface {
 
 type FileService interface {
 	Create(ctx context.Context, storageFile *intdoment.StorageFiles, file io.Reader) error
+
 	Delete(ctx context.Context, storageFile *intdoment.StorageFiles) error
+
 	Download(ctx context.Context, storageFile *intdoment.StorageFiles, w http.ResponseWriter, r *http.Request) error
 }

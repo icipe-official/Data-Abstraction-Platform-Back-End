@@ -34,9 +34,6 @@ CREATE TABLE public.abstractions
 ALTER TABLE IF EXISTS public.abstractions
     OWNER to pg_database_owner;
 
-COMMENT ON TABLE public.abstractions
-    IS 'data abstraction';
-
 -- abstractions trigger to update last_updated_on column
 CREATE TRIGGER abstractions_update_last_updated_on
     BEFORE UPDATE OF directory_id, storage_files_id, tags, data, completed, review_pass
@@ -44,8 +41,8 @@ CREATE TRIGGER abstractions_update_last_updated_on
     FOR EACH ROW
     EXECUTE FUNCTION public.update_last_updated_on();
 
-COMMENT ON TRIGGER abstractions_update_last_updated_on ON public.abstractions
-    IS 'update timestamp upon update on relevant columns';
+
+
 
 -- abstractions_authorization_ids table
 CREATE TABLE public.abstractions_authorization_ids
@@ -73,6 +70,3 @@ CREATE TABLE public.abstractions_authorization_ids
 
 ALTER TABLE IF EXISTS public.abstractions_authorization_ids
     OWNER to pg_database_owner;
-
-COMMENT ON TABLE public.abstractions_authorization_ids
-    IS 'authorization ids that were used to create and/or deactivate the resources';

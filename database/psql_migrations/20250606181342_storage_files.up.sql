@@ -33,8 +33,6 @@ CREATE TABLE public.storage_files
 ALTER TABLE IF EXISTS public.storage_files
     OWNER to pg_database_owner;
 
-COMMENT ON TABLE public.storage_files
-    IS 'Files uploaded to the platform';
 
 CREATE INDEX storage_files_full_text_search_index
     ON public.storage_files USING gin
@@ -46,9 +44,6 @@ CREATE TRIGGER storage_files_update_last_updated_on
     ON public.storage_files
     FOR EACH ROW
     EXECUTE FUNCTION public.update_last_updated_on();
-
-COMMENT ON TRIGGER storage_files_update_last_updated_on ON public.storage_files
-    IS 'update timestamp upon update on relevant columns';
 
 -- function and trigger to update storage_files->full_text_search
 CREATE FUNCTION public.storage_files_update_full_text_search_index()
@@ -93,17 +88,14 @@ $BODY$;
 ALTER FUNCTION public.storage_files_update_full_text_search_index()
     OWNER TO pg_database_owner;
 
-COMMENT ON FUNCTION public.storage_files_update_full_text_search_index()
-    IS 'Update full_text_search column in storage_files when original_name and tags change';
-
 CREATE TRIGGER storage_files_update_full_text_search_index
     BEFORE INSERT OR UPDATE OF original_name, tags
     ON public.storage_files
     FOR EACH ROW
     EXECUTE FUNCTION public.storage_files_update_full_text_search_index();
 
-COMMENT ON TRIGGER storage_files_update_full_text_search_index ON public.storage_files
-    IS 'trigger to update full_text_search column';
+
+
 
 -- storage_files_authorization_ids table
 CREATE TABLE public.storage_files_authorization_ids
@@ -131,6 +123,3 @@ CREATE TABLE public.storage_files_authorization_ids
 
 ALTER TABLE IF EXISTS public.storage_files_authorization_ids
     OWNER to pg_database_owner;
-
-COMMENT ON TABLE public.storage_files_authorization_ids
-    IS 'authorization ids that were used to create and/or deactivate the resources';

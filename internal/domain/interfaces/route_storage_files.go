@@ -10,6 +10,18 @@ import (
 )
 
 type RouteStorageFilesRepository interface {
+	RepoStorageFilesTemporarySearch(
+		ctx context.Context,
+		mmsearch *intdoment.MetadataModelSearch,
+		repo IamRepository,
+		iamCredential *intdoment.IamCredentials,
+		iamAuthorizationRules *intdoment.IamAuthorizationRules,
+		startSearchDirectoryGroupID uuid.UUID,
+		authContextDirectoryGroupID uuid.UUID,
+		skipIfFGDisabled bool,
+		skipIfDataExtraction bool,
+		whereAfterJoin bool,
+	) (*intdoment.MetadataModelSearchResults, error)
 	RepoStorageFilesDeleteOne(
 		ctx context.Context,
 		iamAuthRule *intdoment.IamAuthorizationRule,
@@ -96,6 +108,19 @@ type RouteStorageFilesApiCoreService interface {
 		groupAuthorizationRules []*intdoment.IamGroupAuthorizationRule,
 		currentIamAuthorizationRules *intdoment.IamAuthorizationRules,
 	) ([]*intdoment.IamAuthorizationRule, error)
+	ServiceStorageFilesTemporarySearch(
+		ctx context.Context,
+		mmsearch *intdoment.MetadataModelSearch,
+		repo IamRepository,
+		iamCredential *intdoment.IamCredentials,
+		iamAuthorizationRules *intdoment.IamAuthorizationRules,
+		startSearchDirectoryGroupID uuid.UUID,
+		authContextDirectoryGroupID uuid.UUID,
+		skipIfFGDisabled bool,
+		skipIfDataExtraction bool,
+		whereAfterJoin bool,
+	) (*intdoment.MetadataModelSearchResults, error)
+	ServiceStorageFilesTemporaryGetMetadataModel(ctx context.Context, metadataModelRetrieve MetadataModelRetrieve, targetJoinDepth int) (map[string]any, error)
 	ServiceStorageFilesSearch(
 		ctx context.Context,
 		mmsearch *intdoment.MetadataModelSearch,

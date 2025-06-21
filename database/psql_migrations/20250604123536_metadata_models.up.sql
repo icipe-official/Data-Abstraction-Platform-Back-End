@@ -32,8 +32,6 @@ CREATE TABLE public.metadata_models
 ALTER TABLE IF EXISTS public.metadata_models
     OWNER to pg_database_owner;
 
-COMMENT ON TABLE public.metadata_models
-    IS 'Metadata-Models for different purposes such as dynamic description of inventory items, directory user information etc.';
 
 CREATE INDEX metadata_models_full_text_search_index
     ON public.metadata_models USING gin
@@ -45,9 +43,6 @@ CREATE TRIGGER metadata_models_update_last_updated_on
     ON public.metadata_models
     FOR EACH ROW
     EXECUTE FUNCTION public.update_last_updated_on();
-
-COMMENT ON TRIGGER metadata_models_update_last_updated_on ON public.metadata_models
-    IS 'update timestamp upon update on relevant columns';
 
 -- function and trigger to update metadata_models->full_text_search
 CREATE FUNCTION public.metadata_models_update_full_text_search_index()
@@ -92,17 +87,11 @@ $BODY$;
 ALTER FUNCTION public.metadata_models_update_full_text_search_index()
     OWNER TO pg_database_owner;
 
-COMMENT ON FUNCTION public.metadata_models_update_full_text_search_index()
-    IS 'Update full_text_search column in metadata_models when name, description, and tags change';
-
 CREATE TRIGGER metadata_models_update_full_text_search_index
     BEFORE INSERT OR UPDATE OF name, description, tags
     ON public.metadata_models
     FOR EACH ROW
     EXECUTE FUNCTION public.metadata_models_update_full_text_search_index();
-
-COMMENT ON TRIGGER metadata_models_update_full_text_search_index ON public.metadata_models
-    IS 'trigger to update full_text_search column';
 
 -- metadata_models_authorization_ids table
 CREATE TABLE public.metadata_models_authorization_ids
@@ -131,8 +120,8 @@ CREATE TABLE public.metadata_models_authorization_ids
 ALTER TABLE IF EXISTS public.metadata_models_authorization_ids
     OWNER to pg_database_owner;
 
-COMMENT ON TABLE public.metadata_models_authorization_ids
-    IS 'authorization ids that were used to create and/or deactivate the resources';
+
+
 
 -- metadata_models_directory table
 CREATE TABLE public.metadata_models_directory
@@ -157,18 +146,12 @@ CREATE TABLE public.metadata_models_directory
 ALTER TABLE IF EXISTS public.metadata_models_directory
     OWNER to pg_database_owner;
 
-COMMENT ON TABLE public.metadata_models_directory
-    IS 'Metadata model to use when working with directory data in a particular group';
-
 -- metadata_models_directory trigger to update last_updated_on column
 CREATE TRIGGER metadata_models_directory_update_last_updated_on
     BEFORE UPDATE OF metadata_models_id
     ON public.metadata_models_directory
     FOR EACH ROW
     EXECUTE FUNCTION public.update_last_updated_on();
-
-COMMENT ON TRIGGER metadata_models_directory_update_last_updated_on ON public.metadata_models_directory
-    IS 'update timestamp upon update on relevant columns';
 
 -- metadata_models_directory_groups table
 CREATE TABLE public.metadata_models_directory_groups
@@ -193,15 +176,9 @@ CREATE TABLE public.metadata_models_directory_groups
 ALTER TABLE IF EXISTS public.metadata_models_directory_groups
     OWNER to pg_database_owner;
 
-COMMENT ON TABLE public.metadata_models_directory_groups
-    IS 'Metadata model to use when working with directory groups data in a particular group';
-
 -- metadata_models_directory_groups trigger to update last_updated_on column
 CREATE TRIGGER metadata_models_directory_groups_update_last_updated_on
     BEFORE UPDATE OF metadata_models_id
     ON public.metadata_models_directory_groups
     FOR EACH ROW
     EXECUTE FUNCTION public.update_last_updated_on();
-
-COMMENT ON TRIGGER metadata_models_directory_groups_update_last_updated_on ON public.metadata_models_directory_groups
-    IS 'update timestamp upon update on relevant columns';

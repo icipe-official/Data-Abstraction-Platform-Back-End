@@ -3,7 +3,6 @@ package metadatamodel
 import (
 	"errors"
 	"fmt"
-	"regexp"
 	"slices"
 
 	"github.com/brunoga/deep"
@@ -251,8 +250,7 @@ func (n *Extract2DFields) updateSeparateColumnsField(field map[string]any, mmGro
 	}
 
 	if fgHeaderFormat, ok := field[FIELD_GROUP_PROP_FIELD_VIEW_VALUES_IN_SEPARATE_COLUMNS_HEADER_FORMAT].(string); ok && len(fgHeaderFormat) > 0 {
-		re := regexp.MustCompile(fgHeaderFormat)
-		field[FIELD_GROUP_PROP_FIELD_GROUP_NAME] = string(re.ReplaceAll([]byte(ARRAY_PATH_PLACEHOLDER), []byte(fmt.Sprintf("%d", columnIndex+1))))
+		field[FIELD_GROUP_PROP_FIELD_GROUP_NAME] = string(ARRAY_PATH_REGEX_SEARCH().ReplaceAll([]byte(fgHeaderFormat), fmt.Appendf(nil, "%d", columnIndex+1)))
 	} else {
 		field[FIELD_GROUP_PROP_FIELD_GROUP_NAME] = fmt.Sprintf("%s %v", GetFieldGroupName(field, "#unnamed"), columnIndex+1)
 	}
