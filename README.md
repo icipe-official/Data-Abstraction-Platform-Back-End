@@ -6,7 +6,8 @@ It is comprised of a collection of applications with the main goal is to run a h
 
 - [cmd_app_create_super_user](cmd/cmd_app_create_super_user/main.go) - cli app to create a system user with the necessary system administration roles in the system.
 - [cmd_app_init_database](cmd/cmd_app_init_database/main.go) - cli app to initialize database with default values.
-- [web_service](cmd/web_service/main.go) - http server that combines all the remaining services into one.
+- [job_service](cmd/job_service/main.go) - service that combines all job services into one. 
+- [web_service](cmd/web_service/main.go) - http server that combines all web api services into one.
 
 This section contains information about setting up and running the various backend applications.
 
@@ -517,6 +518,7 @@ Used for connecting to a postgres database.
                 <div>cmd_app_create_super_user</div>
                 <div>cmd_app_init_database</div>
                 <div>golang migrate</div>
+                <div>job_service</div>
             </td>
         </tr>
         <tr>
@@ -529,6 +531,7 @@ Used for connecting to a postgres database.
                 <div>cmd_app_create_super_user</div>
                 <div>cmd_app_init_database</div>
                 <div>golang migrate</div>
+                <div>job_service</div>
             </td>
         </tr>
         <tr>
@@ -541,6 +544,7 @@ Used for connecting to a postgres database.
                 <div>cmd_app_create_super_user</div>
                 <div>cmd_app_init_database</div>
                 <div>golang migrate</div>
+                <div>job_service</div>
             </td>
         </tr>
         <tr>
@@ -553,6 +557,7 @@ Used for connecting to a postgres database.
                 <div>cmd_app_create_super_user</div>
                 <div>cmd_app_init_database</div>
                 <div>golang migrate</div>
+                <div>job_service</div>
             </td>
         </tr>
         <tr>
@@ -577,6 +582,7 @@ Used for connecting to a postgres database.
                 <div>cmd_app_create_super_user</div>
                 <div>cmd_app_init_database</div>
                 <div>golang migrate</div>
+                <div>job_service</div>
             </td>
         </tr>
         <tr>
@@ -588,12 +594,14 @@ Used for connecting to a postgres database.
                 <div>List of postgres search params.</div>
                 <div>Separated by space.</div>
                 <div>golang migrate</div>
+                <div>job_service</div>
             </td>
             <td>
                 <div>web_service</div>
                 <div>cmd_app_create_super_user</div>
                 <div>cmd_app_init_database</div>
                 <div>golang migrate</div>
+                <div>job_service</div>
             </td>
         </tr>
     </tbody>
@@ -623,6 +631,7 @@ Will look at S3 config first before local.
             <td>Path to folder to store files</td>
             <td>
                 <div>web_service</div>
+                <div>job_service</div>
             </td>
         </tr>   
     </tbody>
@@ -649,6 +658,7 @@ Will look at S3 config first before local.
             <td></td>
             <td>
                 <div>web_service</div>
+                <div>job_service</div>
             </td>
         </tr>
         <tr>
@@ -658,6 +668,7 @@ Will look at S3 config first before local.
             <td></td>
             <td>
                 <div>web_service</div>
+                <div>job_service</div>
             </td>
         </tr>
         <tr>
@@ -667,6 +678,7 @@ Will look at S3 config first before local.
             <td></td>
             <td>
                 <div>web_service</div>
+                <div>job_service</div>
             </td>
         </tr>
         <tr>
@@ -676,6 +688,7 @@ Will look at S3 config first before local.
             <td></td>
             <td>
                 <div>web_service</div>
+                <div>job_service</div>
             </td>
         </tr>
         <tr>
@@ -685,6 +698,7 @@ Will look at S3 config first before local.
             <td>Bucket service will use to store its files.</td>
             <td>
                 <div>web_service</div>
+                <div>job_service</div>
             </td>
         </tr>        
     </tbody>
@@ -846,6 +860,7 @@ Setting up telemetry infrastructure.
                 <div>web_service</div>
                 <div>cmd_app_create_super_user</div>
                 <div>cmd_app_init_database</div>
+                <div>job_service</div>
             </td>
         </tr>
         <tr>
@@ -857,6 +872,7 @@ Setting up telemetry infrastructure.
                 <div>web_service</div>
                 <div>cmd_app_create_super_user</div>
                 <div>cmd_app_init_database</div>
+                <div>job_service</div>
             </td>
         </tr>
         <tr>
@@ -868,6 +884,7 @@ Setting up telemetry infrastructure.
                 <div>web_service</div>
                 <div>cmd_app_create_super_user</div>
                 <div>cmd_app_init_database</div>
+                <div>job_service</div>
             </td>
         </tr>
         <tr>
@@ -879,6 +896,7 @@ Setting up telemetry infrastructure.
                 <div>web_service</div>
                 <div>cmd_app_create_super_user</div>
                 <div>cmd_app_init_database</div>
+                <div>job_service</div>
             </td>
         </tr>
         <tr>
@@ -890,6 +908,7 @@ Setting up telemetry infrastructure.
                 <div>web_service</div>
                 <div>cmd_app_create_super_user</div>
                 <div>cmd_app_init_database</div>
+                <div>job_service</div>
             </td>
         </tr>
     </tbody>
