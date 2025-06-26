@@ -14,7 +14,7 @@ import (
 	intlibmmodel "github.com/icipe-official/Data-Abstraction-Platform-Back-End/internal/lib/metadata_model"
 )
 
-func ExportToCSV(ctx context.Context, searchResults *intdoment.MetadataModelSearchResults, storageFilesTemporaryRepository intdomint.StorageFilesTemporaryRepository, fileService intdomint.FileService) (*intdoment.StorageFilesTemporary, error) {
+func ExportToCSV(ctx context.Context, searchResults *intdoment.MetadataModelSearchResults, storageFilesTemporaryRepository intdomint.StorageFilesTemporaryRepository, fileService intdomint.FileService, dataName string) (*intdoment.StorageFilesTemporary, error) {
 	extract2DFields, err := intlibmmodel.NewExtract2DFields(searchResults.MetadataModel, true, true, true, nil)
 	if err != nil {
 		return nil, err
@@ -89,7 +89,7 @@ func ExportToCSV(ctx context.Context, searchResults *intdoment.MetadataModelSear
 
 	storageFilesTemporary := new(intdoment.StorageFilesTemporary)
 	if fileInfo, err := tmpFile.Stat(); err == nil {
-		storageFilesTemporary.OriginalName = []string{fmt.Sprintf("%s_export.csv", intdoment.AbstractionsRepository().RepositoryName)}
+		storageFilesTemporary.OriginalName = []string{fmt.Sprintf("%s_export.csv", dataName)}
 		storageFilesTemporary.Tags = []string{"tmp"}
 		storageFilesTemporary.StorageFileMimeType = []string{"text/csv"}
 		storageFilesTemporary.SizeInBytes = []int64{fileInfo.Size()}

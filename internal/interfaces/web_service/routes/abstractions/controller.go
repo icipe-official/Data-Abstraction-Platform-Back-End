@@ -92,7 +92,7 @@ func ApiCoreRouter(webService *intwebservice.WebService) *chi.Mux {
 			return property
 		}).(map[string]any)
 
-		if storageFiles, err := intlibexport.ExportToCSV(ctx, searchResults, webService.PostgresRepository, webService.FileService); err != nil {
+		if storageFiles, err := intlibexport.ExportToCSV(ctx, searchResults, webService.PostgresRepository, webService.FileService, intdoment.AbstractionsRepository().RepositoryName); err != nil {
 			webService.Logger.Log(ctx, slog.LevelError, fmt.Sprintf("Export to csv failed, error: %v", err), ctx.Value(intlib.LOG_ATTR_CTX_KEY))
 			intlib.SendJsonErrorResponse(err, w)
 			return
